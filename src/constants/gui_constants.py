@@ -1,6 +1,6 @@
-import src.constants.base_constants as Constants
+"""constants related to gui"""
 
-# constants related to GUI
+import src.constants.base_constants as Constants
 
 TEXT_ANTI_ALIASING = True
 

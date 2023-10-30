@@ -33,15 +33,11 @@ class Scene:
                                 [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
                                 [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
                                 [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]  ]
-
-    # what to do when scene is loaded
     def load(self, screen, main_player):
-        pass
-    
-    # update map (background)
-    def update_map(self, screen, main_player):
+        """function called when scene is loaded"""
+    def update_map(self, screen):
+        """update map(background) every frame"""
         screen.blit(self.background_image, (0,0))
-
-    # update upper layer
-    def update_upper_layer(self, screen, main_player):
+    def update_upper_layer(self, screen):
+        """update upper layer every frame"""
         screen.blit(self.upper_layer_image, (0,0))

@@ -1,6 +1,6 @@
-import src.constants.base_constants as Constants
+"""Constants related to spritesheet and animations"""
 
-# constants related to spritesheet and animations
+import src.constants.base_constants as Constants
 
 SPRITE_WIDTH = 64
 SPRITE_HEIGHT = 64

@@ -1,4 +1,4 @@
-# constants related to tilemap systems
+"""constants related to tilemap systems"""
 
 TILE_SIZE = 32
 TILEMAP_WIDTH = 32
