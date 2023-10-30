@@ -5,12 +5,13 @@ import src.constants.gui_constants as GUIConstants
 # dialogue
 class Dialogue:
     # init dialogue system
-    def __init__(self, text, image_path = None, animation = True, text_shaking = False):
+    def __init__(self, text, image_path = None, animation = True, next_dialogue = False, text_shaking = False):
         self.text = text
         self.text_shaking = text_shaking
         self.animation = animation
         self.typewriter_index = 0
         self.typewriter_animation_index = 0
+        self.animation_finished = False
         if image_path:
             self.image = pygame.image.load(image_path).convert_alpha()
         else:
@@ -30,6 +31,9 @@ class Dialogue:
                 self.typewriter_index += 1
                 self.typewriter_animation_index = 0
             label_text = self.text[0:self.typewriter_index]
+        elif self.typewriter_index >= len(self.text):
+            self.animation_finished = True
+            label_text = self.text
         else:
             label_text = self.text
         

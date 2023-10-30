@@ -6,6 +6,7 @@ import src.constants.spritesheet_constants as SpriteSheet_Constants
 from src.gui.testing_gui import TestingGUI
 from src.scenes.base_scene import BaseScene
 import src.constants.gui_constants as GUIConstants
+from src.gui.dialogue import Dialogue
 
 ### init and set global variables
 pygame.init()
@@ -34,14 +35,14 @@ while running:
             running = False
             break
         if event.type == pygame.KEYDOWN and Player.dialogue_active:
-            Player.dialogue_active.hide(screen, scene, main_player)
-            Player.dialogue_active = None
+            main_player.dialogue_was_just_cancelled = False
+            main_player.update_dialogues(screen, scene, main_player)
     
     if not running: break
 
     # check for keypress
     keys_pressed = pygame.key.get_pressed()
-    if not main_player.is_moving: # process movement
+    if not main_player.dialogue_active and not main_player.is_moving and not main_player.dialogues_waiting: # process movement
         if keys_pressed[pygame.K_w]:
             main_player.move_one_tile(SpriteSheet_Constants.FACING_UP, scene)
         if keys_pressed[pygame.K_a]:
