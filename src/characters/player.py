@@ -24,7 +24,7 @@ class Player(Character):
         if Player.dialogue_active and Player.dialogue_active.animation_finished:
             Player.dialogue_active.hide(screen, scene, main_player)
             if Player.dialogues_waiting:
-                Player.dialogue_active = Dialogue(*Player.dialogues_waiting[0])
+                Player.dialogue_active = Player.dialogues_waiting[0][0](*Player.dialogues_waiting[0][1:])
                 Player.dialogue_active.show(screen, scene, main_player)
                 Player.dialogues_waiting = Player.dialogues_waiting[1:]
             else:
@@ -32,7 +32,7 @@ class Player(Character):
         # check if there is no dialogue at all
         elif not Player.dialogue_active:
             if Player.dialogues_waiting:
-                Player.dialogue_active = Dialogue(*Player.dialogues_waiting[0])
+                Player.dialogue_active = Player.dialogues_waiting[0][0](*Player.dialogues_waiting[0][1:])
                 Player.dialogue_active.show(screen, scene, main_player)
                 Player.dialogues_waiting = Player.dialogues_waiting[1:]
             else:

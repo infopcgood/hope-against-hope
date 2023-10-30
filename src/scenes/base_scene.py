@@ -2,6 +2,7 @@
 from collections import defaultdict
 import pygame
 from src.scenes.scene import Scene
+from src.gui.dialogue import Dialogue
 
 class BaseScene(Scene):
     """Base scene only used in testing"""
@@ -12,8 +13,8 @@ class BaseScene(Scene):
         self.start_tile_y = 10
         self.event_tiles = defaultdict(tuple)
         self.dialogue_tiles = defaultdict(tuple)
-        self.dialogue_tiles[(10,1)] = [('그런데, 그것이 과연 완벽한 진실이라고 장담할 수 있을까? 나는 그렇다고 생각하지 않아.',),(',,,,,,,,,,,,,,이건빠르고저건느리네요..','textures/characters/test.png',),]
-        self.dialogue_tiles[(11,1)] = [('수행 너무 많아ㅜㅜㅜ','textures/characters/test.png',),]
+        self.dialogue_tiles[(10,1)] = [(Dialogue, '그런데, 그것이 과연 완벽한 진실이라고 장담할 수 있을까? 나는 그렇다고 생각하지 않아.',),(',,,,,,,,,,,,,,이건빠르고저건느리네요..','textures/characters/test.png',),]
+        self.dialogue_tiles[(11,1)] = [(Dialogue, '수행 너무 많아ㅜㅜㅜ','textures/characters/test.png',),]
         self.scene_change_tiles = defaultdict(tuple)
         self.movable_tiles = [  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
                                 [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
