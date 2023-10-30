@@ -41,13 +41,13 @@ while running:
     # check for keypress
     keys_pressed = pygame.key.get_pressed()
     if not main_player.dialogue_active and not main_player.is_moving and not main_player.dialogues_waiting: # process movement
-        if keys_pressed[pygame.K_w]:
+        if keys_pressed[pygame.K_w] or keys_pressed[pygame.K_UP]:
             main_player.move_one_tile(SpriteSheet_Constants.FACING_UP, scene)
-        if keys_pressed[pygame.K_a]:
+        if keys_pressed[pygame.K_a] or keys_pressed[pygame.K_LEFT]:
             main_player.move_one_tile(SpriteSheet_Constants.FACING_LEFT, scene)
-        if keys_pressed[pygame.K_s]:
+        if keys_pressed[pygame.K_s] or keys_pressed[pygame.K_DOWN]:
             main_player.move_one_tile(SpriteSheet_Constants.FACING_DOWN, scene)
-        if keys_pressed[pygame.K_d]:
+        if keys_pressed[pygame.K_d] or keys_pressed[pygame.K_RIGHT]:
             main_player.move_one_tile(SpriteSheet_Constants.FACING_RIGHT, scene)
     # check if scene needs to be updated
     if scene_changed:
