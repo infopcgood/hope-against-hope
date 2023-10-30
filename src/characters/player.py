@@ -16,7 +16,7 @@ class Player(Character):
         """update active & waiting dialogues"""
         # check if tile has event
         if scene.event_tiles[(main_player.tile_y, main_player.tile_x)]:
-            scene.event_tiles[(main_player.tile_y, main_player.tile_x)](screen, main_player)
+            scene.event_tiles[(main_player.tile_y, main_player.tile_x)](screen, scene, main_player)
         # check if tile has dialogue
         if scene.dialogue_tiles[(main_player.tile_y, main_player.tile_x)] and not Player.dialogue_active:
             Player.dialogues_waiting = Player.dialogues_waiting + scene.dialogue_tiles[(main_player.tile_y, main_player.tile_x)]
