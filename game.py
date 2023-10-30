@@ -5,6 +5,7 @@ from src.characters.player import Player
 import src.constants.spritesheet_constants as SpriteSheet_Constants
 from src.gui.testing_gui import TestingGUI
 from src.scenes.base_scene import BaseScene
+import src.constants.gui_constants as GUIConstants
 
 ### init and set global variables
 pygame.init()
@@ -15,22 +16,28 @@ running = True
 scene_changed = True
 
 ### Fonts
-testing_gui_font = pygame.font.SysFont('Comic Sans MS', 20)
+GUIConstants.TESTING_GUI_FONT = pygame.font.SysFont('Comic Sans MS', 20)
+GUIConstants.DIALOGUE_FONT = pygame.font.SysFont('Malgun Gothic', 20)
 
 ### set basic objects
 scene = BaseScene()
 main_player = Player()
-testing_gui = TestingGUI(testing_gui_font)
+testing_gui = TestingGUI()
 
 while running:
     # delay amount of FPS and get delta_time for correct speed
     delta_time = clock.tick(Constants.FPS)
     
-    # check for quit event
+    # check for quit & dialogue interrupt event
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
             break
+        if event.type == pygame.KEYDOWN and Player.dialogue_active:
+            Player.dialogue_active.hide(screen, scene, main_player)
+            Player.dialogue_active = None
+    
+    if not running: break
 
     # check for keypress
     keys_pressed = pygame.key.get_pressed()
@@ -46,20 +53,22 @@ while running:
     
     # check if scene needs to be updated
     if scene_changed:
-        scene.load(screen)
+        scene.load(screen, main_player)
         main_player.force_instant_move(scene.start_tile_x, scene.start_tile_y)
         scene_changed = False
 
     # update screen in order of scene(map) -> player -> NPCs -> upper layer -> GUI -> pygame.display
     # scene(map)
-    scene.update_map(screen)
+    scene.update_map(screen,main_player)
     # player
     main_player.update(screen, scene, main_player, delta_time)
     # NPCs
     # upper_layer
-    scene.update_upper_layer(screen)
+    scene.update_upper_layer(screen, main_player)
     # GUI
     testing_gui.update(screen, main_player, scene.movable_tiles)
+    if Player.dialogue_active:
+        Player.dialogue_active.update(screen, scene, main_player)
     # pygame.display
     pygame.display.update()
 

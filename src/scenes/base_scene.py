@@ -1,8 +1,9 @@
 import pygame
 from collections import defaultdict
 from src.scenes.scene import Scene
+from src.gui.dialogue import Dialogue
 
-# base scene
+# base
 class BaseScene(Scene):
     def __init__(self):
         self.background_image = pygame.image.load("textures/map/basic_background_with_houses.png").convert_alpha()
@@ -10,8 +11,9 @@ class BaseScene(Scene):
         self.start_tile_x = 13
         self.start_tile_y = 10
         self.event_tiles = defaultdict(tuple)
-        self.event_tiles[(10,1)] = self.simpleEvent
-        self.event_tiles[(11,1)] = self.simpleEvent
+        self.dialogue_tiles = defaultdict(tuple)
+        self.dialogue_tiles[(10,1)] = ('그런데, 그것이 과연 완벽한 진실이라고 장담할 수 있을까? 나는 그렇다고 생각하지 않아.',)
+        self.dialogue_tiles[(11,1)] = (',,,,,,,,,,,,,,이건빠르고저건느리네요..','textures/characters/test.png',)
         self.scene_change_tiles = defaultdict(tuple)
         self.movable_tiles = [  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
                                 [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
@@ -31,5 +33,3 @@ class BaseScene(Scene):
                                 [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
                                 [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
                                 [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]  ]
-    def simpleEvent(self, screen):
-        print("simple event triggered!")

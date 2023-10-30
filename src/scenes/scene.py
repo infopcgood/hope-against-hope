@@ -12,6 +12,7 @@ class Scene:
         self.start_tile_y = 9
         # initialize event and scene_chagnge tiles
         self.event_tiles = defaultdict(tuple)
+        self.dialogue_tiles = defaultdict(tuple)
         self.scene_change_tiles = defaultdict(tuple)
         # define what tiles are steppable
         self.movable_tiles = [  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
@@ -34,13 +35,13 @@ class Scene:
                                 [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]  ]
 
     # what to do when scene is loaded
-    def load(self, screen):
+    def load(self, screen, main_player):
         pass
     
     # update map (background)
-    def update_map(self, screen):
+    def update_map(self, screen, main_player):
         screen.blit(self.background_image, (0,0))
 
     # update upper layer
-    def update_upper_layer(self, screen):
+    def update_upper_layer(self, screen, main_player):
         screen.blit(self.upper_layer_image, (0,0))
