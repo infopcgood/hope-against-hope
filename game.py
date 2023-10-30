@@ -34,8 +34,8 @@ while running:
         if event.type == pygame.QUIT:
             running = False
             break
+        # continue dialogue
         if event.type == pygame.KEYDOWN and Player.dialogue_active:
-            main_player.dialogue_was_just_cancelled = False
             main_player.update_dialogues(screen, scene, main_player)
     
     if not running: break
