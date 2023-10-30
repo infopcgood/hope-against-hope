@@ -22,7 +22,18 @@ class Player(pygame.sprite.Sprite):
         self.is_moving = False
         self.facing = SpriteSheet_Constants.FACING_RIGHT
     
+    def force_instant_move(self, tile_x, tile_y):
+        self.tile_x = tile_x
+        self.tile_y = tile_y
+        self.x = tile_x * TileMap_Constants.TILE_SIZE
+        self.y = tile_y * TileMap_Constants.TILE_SIZE
+    
     def move_one_tile(self, direction, movable_tiles):
+        # check if destination tile is valid
+        if self.tile_x + TileMap_Constants.MOVEMENT_X[direction] > TileMap_Constants.TILEMAP_X_MAX or self.tile_x + TileMap_Constants.MOVEMENT_X[direction] < TileMap_Constants.TILEMAP_X_MIN:
+            return
+        if self.tile_y + TileMap_Constants.MOVEMENT_Y[direction] > TileMap_Constants.TILEMAP_Y_MAX or self.tile_y + TileMap_Constants.MOVEMENT_Y[direction] < TileMap_Constants.TILEMAP_Y_MIN:
+            return
         if not movable_tiles[self.tile_y + TileMap_Constants.MOVEMENT_Y[direction]][self.tile_x + TileMap_Constants.MOVEMENT_X[direction]]:
             self.facing = direction
             return
@@ -56,6 +67,6 @@ class Player(pygame.sprite.Sprite):
             self.stop()
             self.x = self.tile_x * TileMap_Constants.TILE_SIZE
             self.y = self.tile_y * TileMap_Constants.TILE_SIZE
-        rect = (self.x - SpriteSheet_Constants.SPRITE_WIDTH // 2, self.y - SpriteSheet_Constants.SPRITE_HEIGHT // 2, SpriteSheet_Constants.SPRITE_WIDTH, SpriteSheet_Constants.SPRITE_HEIGHT)
+        rect = (self.x - 3 * SpriteSheet_Constants.SPRITE_WIDTH // 4, self.y - SpriteSheet_Constants.SPRITE_HEIGHT // 2, SpriteSheet_Constants.SPRITE_WIDTH, SpriteSheet_Constants.SPRITE_HEIGHT)
         image = self.spritesheet.image_at_anim(self.facing, self.anim, self.anim_index)
         screen.blit(image, rect)

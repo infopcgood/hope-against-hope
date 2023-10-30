@@ -6,13 +6,14 @@ import src.constants.spritesheet_constants as SpriteSheet_Constants
 from src.gui.testing_gui import TestingGUI
 from src.scenes.base_scene import BaseScene
 
-### init
+### init and set global variables
 pygame.init()
-main_font = pygame.font.SysFont('Comic Sans MS', 30)
+main_font = pygame.font.SysFont('Comic Sans MS', 20)
 screen = pygame.display.set_mode((Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT))
 pygame.display.set_caption("Game")
 clock = pygame.time.Clock()
 running = True
+scene_changed = True
 
 ### set basic objects
 scene = BaseScene()
@@ -28,7 +29,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
             break
-    
+
     # check for keypress
     keys_pressed = pygame.key.get_pressed()
     if keys_pressed[pygame.K_w] and not main_player.is_moving:
@@ -40,12 +41,18 @@ while running:
     elif keys_pressed[pygame.K_d] and not main_player.is_moving:
         main_player.move_one_tile(SpriteSheet_Constants.FACING_RIGHT, scene.movable_tiles)
     
-    # update screen in order of scene(map) -> player -> NPCs -> GUI -> pygame.display
+    # check if scene needs to be updated
+    if scene_changed:
+        main_player.force_instant_move(scene.start_tile_x, scene.start_tile_y)
+        scene_changed = False
+    # update screen in order of scene(map) -> player -> NPCs -> upper layer -> GUI -> pygame.display
     # scene(map)
-    scene.update(screen)
+    scene.update_map(screen)
     # player
     main_player.update(screen, delta_time)
     # NPCs
+    # upper_layer
+    scene.update_upper_layer(screen)
     # GUI
     testing_gui.update(screen, main_player, scene.movable_tiles)
     # pygame.display
