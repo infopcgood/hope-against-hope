@@ -1,18 +1,19 @@
 import pygame
 from collections import defaultdict
-from src.scenes.scene import Scene
 
-# base scene
-class BaseScene(Scene):
+# basic scene class
+class Scene:
     def __init__(self):
-        self.background_image = pygame.image.load("textures/map/basic_background_with_houses.png").convert_alpha()
-        self.upper_layer_image = pygame.image.load("textures/upper_layer/basic_tree_upper_layer.png").convert_alpha()
-        self.start_tile_x = 13
-        self.start_tile_y = 10
+        # load background and upper_layer image
+        self.background_image = pygame.image.load("textures/map/white.png").convert_alpha()
+        self.upper_layer_image = pygame.image.load("textures/upper_layer/transparent.png").convert_alpha()
+        # set start tile
+        self.start_tile_x = 16
+        self.start_tile_y = 9
+        # initialize event and scene_chagnge tiles
         self.event_tiles = defaultdict(tuple)
-        self.event_tiles[(10,1)] = self.simpleEvent
-        self.event_tiles[(11,1)] = self.simpleEvent
         self.scene_change_tiles = defaultdict(tuple)
+        # define what tiles are steppable
         self.movable_tiles = [  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
                                 [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
                                 [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
@@ -22,14 +23,24 @@ class BaseScene(Scene):
                                 [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
                                 [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
                                 [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-                                [0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-                                [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-                                [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-                                [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-                                [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-                                [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+                                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
                                 [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
                                 [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
                                 [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]  ]
-    def simpleEvent(self, screen):
-        print("simple event triggered!")
+
+    # what to do when scene is loaded
+    def load(self, screen):
+        pass
+    
+    # update map (background)
+    def update_map(self, screen):
+        screen.blit(self.background_image, (0,0))
+
+    # update upper layer
+    def update_upper_layer(self, screen):
+        screen.blit(self.upper_layer_image, (0,0))
