@@ -13,7 +13,7 @@ class Dialogue:
         self.animation = animation
         self.typewriter_index = 0
         self.typewriter_animation_index = 0
-        self.animation_finished = False
+        self.finished = False
         if image_path:
             self.image = pygame.image.load(image_path).convert_alpha()
         else:
@@ -30,10 +30,8 @@ class Dialogue:
                 self.typewriter_index += 1
                 self.typewriter_animation_index = 0
             label_text = self.text[0:self.typewriter_index]
-        elif self.typewriter_index >= len(self.text):
-            self.animation_finished = True
-            label_text = self.text
         else:
+            self.finished = True
             label_text = self.text
         # real drawing happenes here
         transparent_surface = pygame.Surface((Constants.WINDOW_WIDTH, GUIConstants.DIALOGUE_HEIGHT))

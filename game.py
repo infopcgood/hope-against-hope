@@ -6,6 +6,7 @@ import src.constants.spritesheet_constants as SpriteSheet_Constants
 from src.gui.testing_gui import TestingGUI
 from src.scenes.base_scene import BaseScene
 import src.constants.gui_constants as GUIConstants
+from src.events.dialogue_event import DialogueEvent
 
 ### init and set global variables
 pygame.init()
@@ -33,28 +34,28 @@ while running:
             running = False
             break
         # continue dialogue
-        if event.type == pygame.KEYDOWN and Player.dialogue_active:
-            main_player.update_dialogues(screen, scene, main_player)
+        if event.type == pygame.KEYDOWN and Player.event_active:
+            main_player.update_event_system(screen, scene, main_player)
     if not running:
         break
 
     # check for keypress
     keys_pressed = pygame.key.get_pressed()
-    if not main_player.dialogue_active and not main_player.is_moving and not main_player.dialogues_waiting: # process movement
+    if not main_player.event_active and not main_player.is_moving and not main_player.events_waiting: # process movement
         if keys_pressed[pygame.K_w] or keys_pressed[pygame.K_UP]:
             main_player.move_one_tile(SpriteSheet_Constants.FACING_UP, scene)
-        if keys_pressed[pygame.K_a] or keys_pressed[pygame.K_LEFT]:
+        elif keys_pressed[pygame.K_a] or keys_pressed[pygame.K_LEFT]:
             main_player.move_one_tile(SpriteSheet_Constants.FACING_LEFT, scene)
-        if keys_pressed[pygame.K_s] or keys_pressed[pygame.K_DOWN]:
+        elif keys_pressed[pygame.K_s] or keys_pressed[pygame.K_DOWN]:
             main_player.move_one_tile(SpriteSheet_Constants.FACING_DOWN, scene)
-        if keys_pressed[pygame.K_d] or keys_pressed[pygame.K_RIGHT]:
+        elif keys_pressed[pygame.K_d] or keys_pressed[pygame.K_RIGHT]:
             main_player.move_one_tile(SpriteSheet_Constants.FACING_RIGHT, scene)
     # check if scene needs to be updated
     if scene_changed:
         scene.load(screen, main_player)
         main_player.force_instant_move(scene.start_tile_x, scene.start_tile_y)
         scene_changed = False
-    # update screen in order of scene(map) -> player -> NPCs -> upper layer -> GUI -> pygame.display
+    # update screen in order of scene(map) -> player -> NPCs -> upper layer -> GUI (DialogueEvent) -> pygame.display
     # scene(map)
     scene.update_map(screen)
     # player
@@ -64,8 +65,8 @@ while running:
     scene.update_upper_layer(screen)
     # GUI
     testing_gui.update(screen, main_player, scene.movable_tiles)
-    if Player.dialogue_active:
-        Player.dialogue_active.update(screen)
+    if isinstance(Player.event_active, DialogueEvent):
+        Player.event_active.object.update(screen)
     # pygame.display
     pygame.display.update()
 
