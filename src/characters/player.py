@@ -3,6 +3,7 @@
 from src.characters.character import Character
 from src.gui.dialogue import Dialogue
 from src.events.dialogue_event import DialogueEvent
+from src.events.basic_function_event import BasicFunctionEvent
 
 class Player(Character):
     """Player class that inherits Character"""
@@ -42,5 +43,7 @@ class Player(Character):
             if isinstance(Player.event_active, DialogueEvent):
                 Player.event_active.object = Dialogue(*Player.event_active.args)
                 Player.event_active.object.show(screen, scene, main_player)
+            elif isinstance(Player.event_active, BasicFunctionEvent):
+                Player.event_active.object(screen, scene, main_player)
             else:
                 raise NotImplementedError

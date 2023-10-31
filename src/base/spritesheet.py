@@ -15,4 +15,4 @@ class SpriteSheet:
         return image
     def image_at_anim(self, facing, anim_type, anim_index):
         """get image of specified frame of animation"""
-        return self.image_at_rect((SpriteSheet_Constants.SPRITE_WIDTH * (anim_index) , SpriteSheet_Constants.SPRITE_HEIGHT * (anim_type + facing), SpriteSheet_Constants.SPRITE_WIDTH, SpriteSheet_Constants.SPRITE_HEIGHT))
+        return self.image_at_rect((SpriteSheet_Constants.SPRITE_WIDTH * (anim_index) , SpriteSheet_Constants.SPRITE_HEIGHT * (anim_type if anim_type == SpriteSheet_Constants.ACTION_DEAD else anim_type + facing), SpriteSheet_Constants.SPRITE_WIDTH, SpriteSheet_Constants.SPRITE_HEIGHT))

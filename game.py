@@ -65,7 +65,7 @@ while running:
     scene.update_upper_layer(screen)
     # GUI
     testing_gui.update(screen, main_player, scene.movable_tiles)
-    if isinstance(Player.event_active, DialogueEvent):
+    if Player.event_active and Player.event_active.needs_to_be_updated:
         Player.event_active.object.update(screen)
     # pygame.display
     pygame.display.update()
