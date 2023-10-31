@@ -6,7 +6,6 @@ import src.constants.spritesheet_constants as SpriteSheet_Constants
 from src.gui.testing_gui import TestingGUI
 from src.scenes.base_scene import BaseScene
 import src.constants.gui_constants as GUIConstants
-from src.events.dialogue_event import DialogueEvent
 
 ### init and set global variables
 pygame.init()

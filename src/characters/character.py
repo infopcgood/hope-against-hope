@@ -71,12 +71,12 @@ class Character(pygame.sprite.Sprite):
             self.anim_index += 1
             # if animation frame needs to be looped
             if self.anim_index >= SpriteSheet_Constants.ACTION_INDEX_CNT[self.anim]:
-                self.playing_anim = False
                 if SpriteSheet_Constants.ACTION_LOOP[self.anim]:
                     self.anim_index = SpriteSheet_Constants.ACTION_START_CNT[self.anim]
                 elif SpriteSheet_Constants.ACTION_STOP[self.anim]:
                     self.stop(screen, scene, main_player)
                 else:
+                    self.playing_anim = False
                     self.anim_index = SpriteSheet_Constants.ACTION_INDEX_CNT[self.anim] - 1
         # increment index
         self.anim_update_index += 1
