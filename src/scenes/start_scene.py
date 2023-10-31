@@ -1,19 +1,20 @@
-"""Basic scene class"""
+"""Start Scene"""
 from collections import defaultdict
 import pygame
+from src.scenes.base_scene import BaseScene
+from src.scenes.scene import Scene
+from src.events.basic_function_event import BasicFunctionEvent
+from src.events.scene_change_event import SceneChangeEvent
+from src.extra.functions import quit_game
 
-class Scene:
-    """basic scene class"""
-    def __init__(self, start_tile_x = 16, start_tile_y = 9):
-        # load background and upper_layer image
-        self.background_image = pygame.image.load("textures/map/white.png").convert_alpha()
-        self.upper_layer_image = pygame.image.load("textures/map/white.png").convert_alpha()
-        # set start tile
+class StartScene(Scene):
+    """Start Scene"""
+    def __init__(self, start_tile_x = 16, start_tile_y = 9): # warning ignored because everything has to be redefined
+        self.background_image = pygame.image.load("textures/map/test_title_screen.png").convert_alpha()
+        self.upper_layer_image = pygame.image.load("textures/upper_layer/transparent.png").convert_alpha()
         self.start_tile_x = start_tile_x
         self.start_tile_y = start_tile_y
-        # initialize event and scene_chagnge tiles
         self.event_tiles = defaultdict(list)
-        # define what tiles are steppable
         self.movable_tiles = [  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
                                 [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
                                 [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
@@ -22,9 +23,9 @@ class Scene:
                                 [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
                                 [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
                                 [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-                                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-                                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-                                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                                [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+                                [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+                                [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
                                 [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
                                 [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
                                 [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
@@ -33,10 +34,10 @@ class Scene:
                                 [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
                                 [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]  ]
     def load(self, screen, main_player):
-        """function called when scene is loaded"""
-    def update_map(self, screen):
-        """update map(background) every frame"""
-        screen.blit(self.background_image, (0,0))
-    def update_upper_layer(self, screen):
-        """update upper layer every frame"""
-        screen.blit(self.upper_layer_image, (0,0))
+        super().load(screen,main_player)
+        self.event_tiles[(10,1)] = [BasicFunctionEvent(quit_game)]
+        self.event_tiles[(10,32)] = [SceneChangeEvent(BaseScene(1,10))]
+        self.event_tiles[(8,1)] = [BasicFunctionEvent(quit_game)]
+        self.event_tiles[(8,32)] = [SceneChangeEvent(BaseScene(1,8))]
+        self.event_tiles[(9,1)] = [BasicFunctionEvent(quit_game)]
+        self.event_tiles[(9,32)] = [SceneChangeEvent(BaseScene(1,9))]

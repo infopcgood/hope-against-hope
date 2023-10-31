@@ -6,3 +6,4 @@ class DialogueEvent:
         self.args = args
         self.object = None
         self.needs_to_be_updated = True
+        self.update_on_key = True
