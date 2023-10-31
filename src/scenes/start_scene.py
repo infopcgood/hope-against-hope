@@ -17,7 +17,7 @@ class StartScene(Scene):
         self.start_tile_x = start_tile_x
         self.start_tile_y = start_tile_y
         self.event_tiles = defaultdict(list)
-        self.npcs = [Character(1,1,SpriteSheet_Constants.FACING_DOWN)]
+        self.npcs = []
         self.movable_tiles = [  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
                                 [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
                                 [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],

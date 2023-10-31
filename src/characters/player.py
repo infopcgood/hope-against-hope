@@ -6,6 +6,7 @@ from src.events.dialogue_event import DialogueEvent
 from src.events.basic_function_event import BasicFunctionEvent
 from src.events.delay_event import DelayEvent
 from src.events.scene_change_event import SceneChangeEvent
+from src.events.wait_until_event import WaitUntilEvent
 import src.constants.base_constants as Constants
 import src.constants.spritesheet_constants as SpriteSheet_Constants
 
@@ -67,5 +68,7 @@ class Player(Character):
                 Player.event_active.object.run()
                 Player.scene_needs_to_be_changed = True
                 Player.scene_waiting = Player.event_active.object.desired_scene
+            elif isinstance(Player.event_active, WaitUntilEvent):
+                pass
             else:
                 raise NotImplementedError

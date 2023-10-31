@@ -67,14 +67,14 @@ while running:
         scene.load(screen, main_player)
         main_player.force_instant_move(scene.start_tile_x, scene.start_tile_y)
         Player.scene_needs_to_be_changed = False
-    # update screen in order of scene(map) -> player -> NPCs -> upper layer -> GUI (DialogueEvent) -> pygame.display
+    # update screen in order of scene(map) -> NPCs -> player -> upper layer -> GUI (DialogueEvent) -> pygame.display
     # scene(map)
     scene.update_map(screen)
-    # player
-    main_player.update(screen, scene, main_player, delta_time)
     # NPCs
     for npc in scene.npcs:
         npc.update(screen, scene, main_player, delta_time)
+    # player
+    main_player.update(screen, scene, main_player, delta_time)
     # upper_layer
     scene.update_upper_layer(screen)
     # GUI
