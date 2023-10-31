@@ -50,6 +50,7 @@ class Character(pygame.sprite.Sprite):
         # check if destination tile is valid
         if self.tile_x + TileMap_Constants.MOVEMENT_X[direction] > TileMap_Constants.TILEMAP_X_MAX or self.tile_x + TileMap_Constants.MOVEMENT_X[direction] < TileMap_Constants.TILEMAP_X_MIN or self.tile_y + TileMap_Constants.MOVEMENT_Y[direction] > TileMap_Constants.TILEMAP_Y_MAX or self.tile_y + TileMap_Constants.MOVEMENT_Y[direction] < TileMap_Constants.TILEMAP_Y_MIN:
             self.stop(screen, scene, main_player)
+            self.facing = direction
             return
         if not scene.movable_tiles[self.tile_y + TileMap_Constants.MOVEMENT_Y[direction]][self.tile_x + TileMap_Constants.MOVEMENT_X[direction]]:
             self.stop(screen, scene, main_player)

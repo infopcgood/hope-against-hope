@@ -23,7 +23,6 @@ GUIConstants.DIALOGUE_FONT = pygame.font.SysFont('Malgun Gothic', 20)
 ### set basic objects
 scene = StartScene()
 main_player = Player()
-testing_gui = TestingGUI()
 
 while running:
     # delay amount of FPS and get delta_time for correct speed
@@ -74,10 +73,11 @@ while running:
     # player
     main_player.update(screen, scene, main_player, delta_time)
     # NPCs
+    for npc in scene.npcs:
+        npc.update(screen, scene, main_player, delta_time)
     # upper_layer
     scene.update_upper_layer(screen)
     # GUI
-    testing_gui.update(screen, main_player, scene.movable_tiles)
     if Player.event_active and Player.event_active.needs_to_be_updated:
         Player.event_active.object.update(screen)
     # pygame.display

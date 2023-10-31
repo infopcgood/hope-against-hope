@@ -13,6 +13,8 @@ class Scene:
         self.start_tile_y = start_tile_y
         # initialize event and scene_chagnge tiles
         self.event_tiles = defaultdict(list)
+        # npcs
+        self.npcs = []
         # define what tiles are steppable
         self.movable_tiles = [  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
                                 [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
