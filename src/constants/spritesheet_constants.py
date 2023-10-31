@@ -24,7 +24,7 @@ ACTION_LOOP = [False, False, False, False, False, False, False, False, True, Tru
 ACTION_STOP = [True, True, True, True, True, True, True, True, None, None, None, None, True, True, True, True, True, True, True, True, False]
 ACTUALLY_MOVES = [False, False, False, False, False, False, False, False, True, True, True, True, False, False, False, False, False, False, False, False, False]
 
-SPEED_X = [0, -0.1, 0, 0.1]
-SPEED_Y = [-0.1, 0, 0.1, 0]
+SPEED_X = [0, -0.12, 0, 0.12]
+SPEED_Y = [-0.12, 0, 0.12, 0]
 
-ANIM_UPDATE_THRESHOLD = int(4.5 * (Constants.FPS / 60) )
+ANIM_UPDATE_THRESHOLD = int(3.5 * (Constants.FPS / 60) )
