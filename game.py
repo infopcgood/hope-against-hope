@@ -1,8 +1,10 @@
 """Main game"""
 import pygame
+import random
 import src.constants.base_constants as Constants
 from src.characters.player import Player
 import src.constants.spritesheet_constants as SpriteSheet_Constants
+import src.constants.effect_constants as EffectConstants
 from src.gui.testing_gui import TestingGUI
 from src.scenes.start_scene import StartScene
 import src.constants.gui_constants as GUIConstants
@@ -10,7 +12,8 @@ from src.events.delay_event import DelayEvent
 
 ### init and set global variables
 pygame.init()
-screen = pygame.display.set_mode((Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT))
+window = pygame.display.set_mode((Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT))
+screen = pygame.Surface((Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT))
 pygame.display.set_caption("Game")
 clock = pygame.time.Clock()
 running = True
@@ -80,7 +83,12 @@ while running:
     # GUI
     if Player.event_active and Player.event_active.needs_to_be_updated:
         Player.event_active.object.update(screen)
-    # pygame.display
+    # post processing
+    dest = (0,0)
+    if Player.shake_screen:
+        dest = (random.randint(-EffectConstants.SCREEN_SHAKE_AMOUNT,EffectConstants.SCREEN_SHAKE_AMOUNT),random.randint(-EffectConstants.SCREEN_SHAKE_AMOUNT,EffectConstants.SCREEN_SHAKE_AMOUNT))
+    window.blit(screen, dest)
+    # update display
     pygame.display.update()
 
 pygame.quit()

@@ -17,6 +17,7 @@ class Player(Character):
     events_waiting = []
     scene_needs_to_be_changed = False
     scene_waiting = None
+    shake_screen = False
     ## event system is added here
     # when stopping, check if tile has designated dialogue
     def stop(self, screen, scene, main_player):
