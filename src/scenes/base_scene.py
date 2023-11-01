@@ -46,10 +46,11 @@ class BaseScene(Scene):
         super().load(screen,main_player)
         self.event_tiles[(10,1)] = [(SceneChangeEvent(start_scene.StartScene(32,10)), "main_player.facing == SpriteSheet_Constants.FACING_LEFT")]
         self.event_tiles[(8,1)] = [(SceneChangeEvent(start_scene.StartScene(32,8)), "main_player.facing == SpriteSheet_Constants.FACING_LEFT")]
-        self.event_tiles[(9,1)] = [(SceneChangeEvent(start_scene.StartScene(32,9)), "main_player.facing == SpriteSheet_Constants.FACING_LEFT")] 
+        self.event_tiles[(9,1)] = [(SceneChangeEvent(start_scene.StartScene(32,9)), "main_player.facing == SpriteSheet_Constants.FACING_LEFT")]
         self.event_tiles[(10,2)] = [DialogueEvent("답장을 기대하지 않는 게 좋을 거야."), BasicFunctionEvent(self.npc01_move), BasicFunctionEvent(self.npc01_move), BasicFunctionEvent(self.npc01_move), BasicFunctionEvent(self.npc01_move), BasicFunctionEvent(self.npc01_move), WaitUntilEvent("not args[0].is_moving",self.npcs[0]), DialogueEvent("왜지?")]
         self.event_tiles[(8,2)] = [(SceneChangeEvent(start_scene.StartScene(32,8)), "main_player.facing == SpriteSheet_Constants.FACING_LEFT")]
-        self.event_tiles[(9,2)] = [(SceneChangeEvent(start_scene.StartScene(32,9)), "main_player.facing == SpriteSheet_Constants.FACING_LEFT")] 
+        self.event_tiles[(9,2)] = [(SceneChangeEvent(start_scene.StartScene(32,9)), "main_player.facing == SpriteSheet_Constants.FACING_LEFT")]
+
     def npc01_move(self, screen, scene, main_player):
         """npc01 move"""
         self.npcs[0].move_one_tile(SpriteSheet_Constants.FACING_LEFT, screen, scene, main_player)
