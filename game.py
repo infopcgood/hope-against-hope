@@ -84,16 +84,17 @@ while running:
     main_player.update(screen, scene, main_player, delta_time)
     # upper_layer
     scene.update_upper_layer(screen)
-
+    # post processing before gui
+    post_processed_before_gui_screen = screen.copy()
     # GUI
     if Player.event_active and Player.event_active.needs_to_be_updated:
-        Player.event_active.object.update(screen)
-    # post processing
+        Player.event_active.object.update(post_processed_before_gui_screen)
+    # post processing after gui
     dest = (0, 0)
     if Player.shake_screen:
         dest = (random.randint(-EffectConstants.SCREEN_SHAKE_AMOUNT, EffectConstants.SCREEN_SHAKE_AMOUNT),
                 random.randint(-EffectConstants.SCREEN_SHAKE_AMOUNT, EffectConstants.SCREEN_SHAKE_AMOUNT))
-    post_processed_after_gui_screen = screen.copy()
+    post_processed_after_gui_screen = post_processed_before_gui_screen.copy()
     window.blit(post_processed_after_gui_screen, dest)
     # update display
     pygame.display.update()
