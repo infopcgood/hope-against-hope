@@ -1,6 +1,7 @@
 """Main game"""
 import pygame
 import random
+import os
 import src.constants.base_constants as Constants
 from src.characters.player import Player
 import src.constants.spritesheet_constants as SpriteSheet_Constants
@@ -8,6 +9,7 @@ import src.constants.effect_constants as EffectConstants
 from src.gui.testing_gui import TestingGUI
 from src.scenes.start_scene import StartScene
 import src.constants.gui_constants as GUIConstants
+import src.constants.sound_constants as SoundConstants
 from src.events.delay_event import DelayEvent
 
 ### init and set global variables
@@ -15,6 +17,8 @@ pygame.init()
 window = pygame.display.set_mode((Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT))
 screen = pygame.Surface((Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT))
 pygame.display.set_caption("Game")
+for mixer_id in range(8):
+    pygame.mixer.Channel(mixer_id).set_volume(SoundConstants.VOLUME)
 clock = pygame.time.Clock()
 running = True
 initialized = False
@@ -52,7 +56,7 @@ while running:
     # check for keypress
     if not delaying:
         keys_pressed = pygame.key.get_pressed()
-        if not main_player.event_active and not main_player.is_moving and not main_player.events_waiting: # process movement
+        if not main_player.event_active and not main_player.is_moving and not main_player.events_waiting:  # process movement
             if keys_pressed[pygame.K_w] or keys_pressed[pygame.K_UP]:
                 main_player.move_one_tile(SpriteSheet_Constants.FACING_UP, screen, scene, main_player)
             elif keys_pressed[pygame.K_a] or keys_pressed[pygame.K_LEFT]:
@@ -80,14 +84,17 @@ while running:
     main_player.update(screen, scene, main_player, delta_time)
     # upper_layer
     scene.update_upper_layer(screen)
+
     # GUI
     if Player.event_active and Player.event_active.needs_to_be_updated:
         Player.event_active.object.update(screen)
     # post processing
-    dest = (0,0)
+    dest = (0, 0)
     if Player.shake_screen:
-        dest = (random.randint(-EffectConstants.SCREEN_SHAKE_AMOUNT,EffectConstants.SCREEN_SHAKE_AMOUNT),random.randint(-EffectConstants.SCREEN_SHAKE_AMOUNT,EffectConstants.SCREEN_SHAKE_AMOUNT))
-    window.blit(screen, dest)
+        dest = (random.randint(-EffectConstants.SCREEN_SHAKE_AMOUNT, EffectConstants.SCREEN_SHAKE_AMOUNT),
+                random.randint(-EffectConstants.SCREEN_SHAKE_AMOUNT, EffectConstants.SCREEN_SHAKE_AMOUNT))
+    post_processed_after_gui_screen = screen.copy()
+    window.blit(post_processed_after_gui_screen, dest)
     # update display
     pygame.display.update()
 
