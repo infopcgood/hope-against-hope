@@ -1,4 +1,6 @@
 """Main game"""
+import gc
+
 import pygame
 import random
 import os
@@ -22,6 +24,7 @@ for mixer_id in range(8):
 clock = pygame.time.Clock()
 running = True
 initialized = False
+frame_index = 0
 
 ### set basic objects
 scene = StartScene()
@@ -30,6 +33,7 @@ main_player = Player()
 while running:
     # delay amount of FPS and get delta_time for correct speed
     delta_time = clock.tick(Constants.FPS)
+    frame_index += 1
     # check for quit & dialogue interrupt event
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -95,5 +99,9 @@ while running:
     # update display
     pygame.display.update()
 
+    # manual garbage collection
+    if Constants.GARBAGE_COLLECTION_FRAMES and frame_index % Constants.GARBAGE_COLLECTION_FRAMES == 0:
+        print('Garbage is collected.')
+        gc.collect()
 pygame.quit()
 print("Thanks for playing!")
