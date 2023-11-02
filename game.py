@@ -23,10 +23,6 @@ clock = pygame.time.Clock()
 running = True
 initialized = False
 
-### Fonts
-GUIConstants.TESTING_GUI_FONT = pygame.font.SysFont('Comic Sans MS', 20)
-GUIConstants.DIALOGUE_FONT = pygame.font.Font('fonts/Malgun Gothic Regular.ttf', 20)
-
 ### set basic objects
 scene = StartScene()
 main_player = Player()

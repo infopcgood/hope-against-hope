@@ -59,8 +59,10 @@ class Dialogue:
         transparent_surface = pygame.Surface((Constants.WINDOW_WIDTH, GUIConstants.DIALOGUE_HEIGHT))
         transparent_surface.set_alpha(GUIConstants.DIALOGUE_BACKGROUND_ALPHA)
         transparent_surface.fill((0, 0, 0))
-        label = GUIConstants.DIALOGUE_FONT.render(label_text, GUIConstants.TEXT_ANTI_ALIASING,
-                                                  GUIConstants.DIALOGUE_TEXT_COLOR)
+        label = pygame.font.Font(GUIConstants.DIALOGUE_FONT_FILENAME, GUIConstants.DIALOGUE_GUI_FONT_SIZE).render(
+            label_text,
+            GUIConstants.TEXT_ANTI_ALIASING,
+            GUIConstants.DIALOGUE_TEXT_COLOR)
         screen.blit(transparent_surface, (0, GUIConstants.DIALOGUE_Y))
         screen.blit(label, (
             GUIConstants.DIALOGUE_TEXT_X_WITH_IMAGE if self.image else GUIConstants.DIALOGUE_TEXT_X_NO_IMAGE,
