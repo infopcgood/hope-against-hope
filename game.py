@@ -97,20 +97,16 @@ while running:
     # zoom in to player, has bugs TODO
     if scene.scale_screen and Constants.FOCUS_CAMERA_SCALE != 1:
         if Constants.SMOOTH_SCALE:
-            raw_scaled_screen = pygame.transform.smoothscale(screen, (
-                Constants.WINDOW_WIDTH * Constants.FOCUS_CAMERA_SCALE,
-                Constants.WINDOW_HEIGHT * Constants.WINDOW_HEIGHT))
+            raw_scaled_screen = pygame.transform.smoothscale_by(screen, Constants.FOCUS_CAMERA_SCALE)
         else:
-            raw_scaled_screen = pygame.transform.scale(screen, (
-                Constants.WINDOW_WIDTH * Constants.FOCUS_CAMERA_SCALE,
-                Constants.WINDOW_HEIGHT * Constants.WINDOW_HEIGHT))
+            raw_scaled_screen = pygame.transform.scale_by(screen, Constants.FOCUS_CAMERA_SCALE)
 
         scaled_screen_blit_location = (
-            limit_bounds(
-                main_player.x * Constants.FOCUS_CAMERA_SCALE - Constants.FOCUS_CAMERA_SCALE * Constants.WINDOW_WIDTH // 2,
+            - limit_bounds(
+                main_player.center_x * Constants.FOCUS_CAMERA_SCALE - Constants.WINDOW_WIDTH // 2,
                 0, Constants.WINDOW_WIDTH * (Constants.FOCUS_CAMERA_SCALE - 1)),
-            limit_bounds(
-                main_player.y * Constants.FOCUS_CAMERA_SCALE - Constants.FOCUS_CAMERA_SCALE * Constants.WINDOW_HEIGHT // 2,
+            - limit_bounds(
+                main_player.center_y * Constants.FOCUS_CAMERA_SCALE - Constants.WINDOW_HEIGHT // 2,
                 0, Constants.WINDOW_HEIGHT * (Constants.FOCUS_CAMERA_SCALE - 1)))
         scaled_cropped_screen.blit(raw_scaled_screen, scaled_screen_blit_location)
     else:
