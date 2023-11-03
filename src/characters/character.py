@@ -49,26 +49,33 @@ class Character(pygame.sprite.Sprite):
         """force character to face certain direction"""
         self.facing = direction
 
-    def move_one_tile(self, direction, screen, scene, main_player):
+    def move_one_tile(self, direction, screen, scene, main_player, forced=False):
         """move one tile. this method is called only once and actual movement happenes in the update function"""
-        if self.is_paralyzed:
+        if not forced and self.is_paralyzed:
             print("character is paralyzed!")
             return
         self.anim = SpriteSheet_Constants.ACTION_WALKING
         self.playing_anim = True
         # check if destination tile is valid
-        if self.tile_x + TileMap_Constants.MOVEMENT_X[direction] > TileMap_Constants.TILEMAP_X_MAX or self.tile_x + \
-                TileMap_Constants.MOVEMENT_X[direction] < TileMap_Constants.TILEMAP_X_MIN or self.tile_y + \
-                TileMap_Constants.MOVEMENT_Y[direction] > TileMap_Constants.TILEMAP_Y_MAX or self.tile_y + \
-                TileMap_Constants.MOVEMENT_Y[direction] < TileMap_Constants.TILEMAP_Y_MIN:
-            self.stop(screen, scene, main_player)
-            self.facing = direction
-            return
-        if not scene.movable_tiles[self.tile_y + TileMap_Constants.MOVEMENT_Y[direction]][
-            self.tile_x + TileMap_Constants.MOVEMENT_X[direction]]:
-            self.stop(screen, scene, main_player)
-            self.facing = direction
-            return
+        if not forced:
+            if (self.tile_x + TileMap_Constants.MOVEMENT_X[direction] > TileMap_Constants.TILEMAP_X_MAX or \
+                    self.tile_x + TileMap_Constants.MOVEMENT_X[direction] < TileMap_Constants.TILEMAP_X_MIN or \
+                    self.tile_y + TileMap_Constants.MOVEMENT_Y[direction] > TileMap_Constants.TILEMAP_Y_MAX or \
+                    self.tile_y + TileMap_Constants.MOVEMENT_Y[direction] < TileMap_Constants.TILEMAP_Y_MIN):
+                self.stop(screen, scene, main_player)
+                self.facing = direction
+                return
+            if not scene.movable_tiles[self.tile_y + TileMap_Constants.MOVEMENT_Y[direction]] \
+                    [self.tile_x + TileMap_Constants.MOVEMENT_X[direction]]:
+                self.stop(screen, scene, main_player)
+                self.facing = direction
+                return
+            for npc in scene.npcs:
+                if (npc.tile_x, npc.tile_y) == (main_player.tile_x + TileMap_Constants.MOVEMENT_X[direction],
+                                                main_player.tile_y + TileMap_Constants.MOVEMENT_Y[direction]):
+                    self.stop(screen, scene, main_player)
+                    self.facing = direction
+                    return
         # check if animation could be resumed (constant keypress detected)
         if self.facing == direction:
             self.anim_index = self.anim_preserved_index

@@ -12,6 +12,7 @@ from src.gui.testing_gui import TestingGUI
 from src.scenes.start_scene import StartScene
 import src.constants.gui_constants as GUIConstants
 import src.constants.sound_constants as SoundConstants
+import src.constants.tilemap_constants as TileMap_Constants
 from src.events.delay_event import DelayEvent
 
 
@@ -52,6 +53,13 @@ while running:
         # continue dialogue
         if main_player.event_active and event.type == pygame.KEYDOWN and main_player.event_active.update_on_key:
             main_player.update_event_system(screen, scene, main_player)
+        # check for any interactions
+        if not main_player.event_active and not main_player.events_waiting and event.type == pygame.KEYDOWN and event.key == pygame.K_x:
+            for npc in scene.npcs:
+                if (npc.tile_x, npc.tile_y) == (main_player.tile_x + TileMap_Constants.MOVEMENT_X[main_player.facing],
+                                                main_player.tile_y + TileMap_Constants.MOVEMENT_Y[main_player.facing]):
+                    main_player.add_event_queue(npc.events_on_interaction)
+                    main_player.update_event_system(screen, scene, main_player)
     if not running:
         break
     if main_player.event_active and not main_player.event_active.update_on_key:
@@ -129,5 +137,6 @@ while running:
     # manual garbage collection
     if Constants.GARBAGE_COLLECTION_INTERVAL_FRAMES and frame_index % Constants.GARBAGE_COLLECTION_INTERVAL_FRAMES == 0:
         gc.collect()
+
 pygame.quit()
 print("Thanks for playing!")

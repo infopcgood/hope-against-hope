@@ -23,7 +23,8 @@ class BaseScene(Scene):
         self.upper_layer_image = pygame.image.load("textures/upper_layer/basic_tree_upper_layer.png").convert_alpha()
         self.start_tile_x = start_tile_x
         self.start_tile_y = start_tile_y
-        self.npcs = [NPC(32, 10, SpriteSheet_Constants.FACING_LEFT, 'textures/spritesheets/demo2.png')]
+        self.npcs = [
+            NPC(32, 10, SpriteSheet_Constants.FACING_LEFT, 'textures/spritesheets/demo2.png', [DialogueEvent('뭘 봐?')])]
         self.event_tiles = defaultdict(list)
         # self.event_tiles[(10,1)] = [DialogueEvent('그런데, 그것이 과연 완벽한 진실이라고 장담할 수 있을까? 나는 그렇다고 생각하지 않아.',),DialogueEvent(',,,,,,,,,,,,,,이건빠르고저건느리네요..','textures/characters/test.png',),BasicFunctionEvent(self.function_04),DelayEvent(5),DialogueEvent('일어나세요 용사님!!',),BasicFunctionEvent(self.function_05)]
         # self.event_tiles[(11,1)] = [BasicFunctionEvent(self.function_01),]
