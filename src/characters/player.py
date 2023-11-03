@@ -8,68 +8,81 @@ from src.events.delay_event import DelayEvent
 from src.events.scene_change_event import SceneChangeEvent
 from src.events.wait_until_event import WaitUntilEvent
 import src.constants.base_constants as Constants
+import src.constants.tilemap_constants as TileMap_Constants
 import src.constants.spritesheet_constants as SpriteSheet_Constants
+
 
 class Player(Character):
     """Player class that inherits Character"""
-    event_active = None
-    event_needs_to_be_initialized = False
-    events_waiting = []
-    scene_needs_to_be_changed = False
-    scene_waiting = None
-    shake_screen = False
+
+    def __init__(self, tile_x=TileMap_Constants.TILEMAP_WIDTH // 2, tile_y=TileMap_Constants.TILEMAP_HEIGHT // 2,
+                 facing=SpriteSheet_Constants.FACING_RIGHT, spritesheet_path='textures/spritesheets/demo.png'):
+        self.event_active = None
+        self.event_needs_to_be_initialized = False
+        self.events_waiting = []
+        self.scene_needs_to_be_changed = False
+        self.scene_waiting = None
+        self.shake_screen = False
+        super().__init__(tile_x, tile_y, facing, spritesheet_path)
+
     ## event system is added here
     # when stopping, check if tile has designated dialogue
     def stop(self, screen, scene, main_player):
         super().stop(screen, scene, main_player)
         self.update_event_system(screen, scene, main_player)
+
     def activate_next_event(self, screen, scene, main_player):
         """activate next event"""
-        if not Player.events_waiting:
+        if not self.events_waiting:
             return
-        if isinstance(Player.events_waiting[0], tuple):
-            if not eval(Player.events_waiting[0][1]):
-                Player.events_waiting = Player.events_waiting[1:]
-                if Player.events_waiting:
+        if isinstance(self.events_waiting[0], tuple):
+            if not eval(self.events_waiting[0][1]):
+                self.events_waiting = self.events_waiting[1:]
+                if self.events_waiting:
                     self.activate_next_event(screen, scene, main_player)
                 return
-            Player.events_waiting[0] = Player.events_waiting[0][0]
-        Player.event_active = Player.events_waiting[0]
-        Player.events_waiting = Player.events_waiting[1:]
-        Player.event_needs_to_be_initialized = True
+            self.events_waiting[0] = self.events_waiting[0][0]
+        self.event_active = self.events_waiting[0]
+        self.events_waiting = self.events_waiting[1:]
+        self.event_needs_to_be_initialized = True
+
+    def add_event_queue(self, events):
+        """add events to event queue"""
+        self.events_waiting = self.events_waiting + events
+
     def update_event_system(self, screen, scene, main_player):
         """update active & waiting dialogues"""
         # check if tile has event
-        if not Player.event_active and not Player.events_waiting:
-            Player.events_waiting = Player.events_waiting + scene.event_tiles[(main_player.tile_y, main_player.tile_x)]
+        if not self.event_active and not self.events_waiting:
+            self.add_event_queue(scene.event_tiles[(main_player.tile_y, main_player.tile_x)])
         # check if event is finished and another event is waiting
-        if Player.event_active and Player.event_active.object.finished:
-            if isinstance(Player.event_active, DialogueEvent) and Player.event_active.object.finished:
-                Player.event_active.object.hide(screen, scene, main_player)
-            if Player.events_waiting:
+        if self.event_active and self.event_active.object.finished:
+            if isinstance(self.event_active, DialogueEvent) and self.event_active.object.finished:
+                self.event_active.object.hide(screen, scene, main_player)
+            if self.events_waiting:
                 self.activate_next_event(screen, scene, main_player)
             else:
-                Player.event_active = None
+                self.event_active = None
         # check if there is no dialogue at all
-        elif not Player.event_active:
-            if Player.events_waiting:
+        elif not self.event_active:
+            if self.events_waiting:
                 self.activate_next_event(screen, scene, main_player)
             else:
-                Player.event_active = None
-        if Player.event_needs_to_be_initialized:
-            Player.event_needs_to_be_initialized = False
-            if isinstance(Player.event_active, DialogueEvent):
-                Player.event_active.object = Dialogue(*Player.event_active.args)
-                Player.event_active.object.show(screen, scene, main_player)
-            elif isinstance(Player.event_active, BasicFunctionEvent):
-                Player.event_active.object.run(screen, scene, main_player)
-            elif isinstance(Player.event_active, DelayEvent):
-                Player.event_active.object.start()
-            elif isinstance(Player.event_active, SceneChangeEvent):
-                Player.event_active.object.run()
-                Player.scene_needs_to_be_changed = True
-                Player.scene_waiting = Player.event_active.object.desired_scene
-            elif isinstance(Player.event_active, WaitUntilEvent):
+                self.event_active = None
+        if self.event_needs_to_be_initialized:
+            self.event_needs_to_be_initialized = False
+            if isinstance(self.event_active, DialogueEvent):
+                self.event_active.object = Dialogue(*self.event_active.args)
+                self.event_active.object.show(screen, scene, main_player)
+            elif isinstance(self.event_active, BasicFunctionEvent):
+                self.event_active.object.run(screen, scene, main_player)
+            elif isinstance(self.event_active, DelayEvent):
+                self.event_active.object.start()
+            elif isinstance(self.event_active, SceneChangeEvent):
+                self.event_active.object.run()
+                self.scene_needs_to_be_changed = True
+                self.scene_waiting = self.event_active.object.desired_scene
+            elif isinstance(self.event_active, WaitUntilEvent):
                 pass
             else:
                 raise NotImplementedError

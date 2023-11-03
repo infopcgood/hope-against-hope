@@ -44,8 +44,6 @@ class Character(pygame.sprite.Sprite):
         self.tile_y = tile_y
         self.x = tile_x * TileMap_Constants.TILE_SIZE
         self.y = tile_y * TileMap_Constants.TILE_SIZE
-        self.center_x = self.x - 3 * SpriteSheet_Constants.SPRITE_WIDTH // 4
-        self.center_y = self.y - SpriteSheet_Constants.SPRITE_HEIGHT // 2
 
     def face(self, direction):
         """force character to face certain direction"""
@@ -104,8 +102,6 @@ class Character(pygame.sprite.Sprite):
         # move character
         self.x += SpriteSheet_Constants.SPEED_X[self.facing] * dt
         self.y += SpriteSheet_Constants.SPEED_Y[self.facing] * dt
-        self.corner_x = self.x - 3 * SpriteSheet_Constants.SPRITE_WIDTH // 4
-        self.corner_y = self.y - SpriteSheet_Constants.SPRITE_HEIGHT // 2
 
     def stop(self, screen, scene, main_player):
         """forcibly stop character and correct x and y values. extra arguments are for player event system"""
@@ -121,6 +117,8 @@ class Character(pygame.sprite.Sprite):
 
     def update(self, screen, scene, main_player, dt):
         """update function called every frame"""
+        self.corner_x = self.x - 3 * SpriteSheet_Constants.SPRITE_WIDTH // 4
+        self.corner_y = self.y - SpriteSheet_Constants.SPRITE_HEIGHT // 2
         # move or stop character depending on position
         if self.is_moving:
             self.move(screen, scene, main_player, dt)
