@@ -30,8 +30,9 @@ def same_with_errors(a, b, error=1):
 
 # init and set global variables
 pygame.init()
-window = pygame.display.set_mode((Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT))
+window = pygame.display.set_mode((Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT), pygame.DOUBLEBUF, 8)
 screen = pygame.Surface((Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT))
+pygame.event.set_allowed([pygame.QUIT, pygame.KEYDOWN, pygame.KEYUP])
 pygame.display.set_caption("Game")
 for mixer_id in range(8):
     pygame.mixer.Channel(mixer_id).set_volume(SoundConstants.VOLUME)
@@ -55,6 +56,7 @@ for font_folder_name in Asset_Constants.FONT_FOLDERS:
 
 # set basic objects
 scene = StartScene()
+test_gui = TestingGUI()
 main_player = Player()
 
 # screen for scaled screen
@@ -65,7 +67,6 @@ while running:
     delta_time = clock.tick(Constants.FPS)
     frame_index += 1
     # fill screen black
-    screen.fill("black")
     scaled_cropped_screen.fill("black")
 
     # check for quit & dialogue interrupt event
@@ -116,7 +117,6 @@ while running:
             else:
                 if initialized:
                     scene = main_player.scene_waiting
-                print('fading in start')
                 scene.fading = "in"
                 scene.has_been_shown = True
         if not skip_scene_load_flag:
@@ -137,7 +137,6 @@ while running:
 
     # check for fade in and out effect
     if scene.fading == "in":
-        print('really fading in')
         if scene.will_fade_in:
             scene.fade_percent += EffectConstants.FADE_SPEED
             if same_with_errors(scene.fade_percent, 100):
@@ -158,9 +157,9 @@ while running:
             scene.fade_percent = 0
             scene.has_been_shown = False
 
-    if scene.fade_percent == 0:
+    if scene.fade_percent == 0 and screen.get_alpha() != 0:
         screen.set_alpha(0)
-    elif scene.fade_percent == 100:
+    elif scene.fade_percent == 100 and screen.get_alpha() != 255:
         screen.set_alpha(255)
     else:
         screen.set_alpha(max(0, min(255, int(scene.fade_percent * 255 / 100))))
@@ -186,6 +185,7 @@ while running:
     # GUI
     if main_player.event_active and main_player.event_active.needs_to_be_updated:
         main_player.event_active.object.update(scaled_cropped_screen)
+    test_gui.update(scaled_cropped_screen, main_player, scene.movable_tiles, clock.get_fps())
     # post processing after gui
     dest = (0, 0)
     if main_player.shake_screen:
