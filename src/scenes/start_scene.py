@@ -14,6 +14,7 @@ class StartScene(Scene):
     """Start Scene"""
 
     def __init__(self, start_tile_x=16, start_tile_y=9):  # warning ignored because everything has to be redefined
+        self.bgm = pygame.mixer.Sound('sounds/bgm/8 Bit Adventure - David Renda.mp3')
         self.background_image = pygame.image.load("textures/map/test_title_screen.png").convert_alpha()
         self.upper_layer_image = pygame.image.load("textures/upper_layer/transparent.png").convert_alpha()
         self.start_tile_x = start_tile_x

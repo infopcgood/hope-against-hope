@@ -1,12 +1,15 @@
 """Basic scene class"""
 from collections import defaultdict
 import pygame
+import src.constants.sound_constants as SoundConstants
 
 
 class Scene:
     """basic scene class"""
 
     def __init__(self, start_tile_x=16, start_tile_y=9):
+        # bgm
+        self.bgm = None
         # load background and upper_layer image
         self.background_image = pygame.image.load("textures/map/white.png").convert_alpha()
         self.upper_layer_image = pygame.image.load("textures/map/white.png").convert_alpha()
@@ -42,6 +45,10 @@ class Scene:
 
     def load(self, screen, main_player):
         """function called when scene is loaded"""
+        if self.bgm:
+            if pygame.mixer.Channel(SoundConstants.BGM_CHANNEL).get_busy():
+                pygame.mixer.Channel(SoundConstants.BGM_CHANNEL).stop()
+            pygame.mixer.Channel(SoundConstants.BGM_CHANNEL).play(self.bgm)
 
     def update_map(self, screen):
         """update map(background) every frame"""
