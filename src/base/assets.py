@@ -13,6 +13,8 @@ class Assets:
 
     def load_asset(self, asset_path, *args):
         asset_key = asset_path + str(args) if args else asset_path
+        if asset_key in self.assets.keys():
+            return
         if asset_path[-4:] in Asset_Constants.SOUND_ASSET_FILENAME_EXTENSION:
             self.assets[asset_key] = pygame.mixer.Sound(asset_path)
         elif asset_path[-4:] in Asset_Constants.IMAGE_ASSET_FILENAME_EXTENSION:

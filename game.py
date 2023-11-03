@@ -37,6 +37,8 @@ initialized = False
 frame_index = 0
 
 # load assets
+window.blit(pygame.image.load('textures/extra/loading.png'), (0, 0))
+pygame.display.update()
 for asset_folder_name in Asset_Constants.ASSET_FOLDERS:
     for dir_name, _, files in os.walk(asset_folder_name):
         for file_name in files:
@@ -115,7 +117,7 @@ while running:
     main_player.update(screen, scene, main_player, delta_time)
     # upper_layer
     scene.update_upper_layer(screen)
-    # zoom in to player, has bugs TODO
+    # focus in to player
     if scene.scale_screen and Constants.FOCUS_CAMERA_SCALE != 1:
         if Constants.SMOOTH_SCALE:
             raw_scaled_screen = pygame.transform.smoothscale_by(screen, Constants.FOCUS_CAMERA_SCALE)
