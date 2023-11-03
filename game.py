@@ -73,7 +73,7 @@ while running:
             for npc in scene.npcs:
                 if (npc.tile_x, npc.tile_y) == (main_player.tile_x + TileMap_Constants.MOVEMENT_X[main_player.facing],
                                                 main_player.tile_y + TileMap_Constants.MOVEMENT_Y[main_player.facing]):
-                    main_player.add_event_queue(npc.events_on_interaction)
+                    main_player.add_event_queue(screen, scene, main_player, npc.events_on_interaction)
                     main_player.update_event_system(screen, scene, main_player)
     if not running:
         break

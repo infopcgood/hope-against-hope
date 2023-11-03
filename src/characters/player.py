@@ -1,6 +1,7 @@
 """Player method containing Player class"""
 
 from src.characters.character import Character
+from src.events.void_event import VoidEvent
 from src.gui.dialogue import Dialogue
 from src.events.dialogue_event import DialogueEvent
 from src.events.basic_function_event import BasicFunctionEvent
@@ -46,15 +47,24 @@ class Player(Character):
         self.events_waiting = self.events_waiting[1:]
         self.event_needs_to_be_initialized = True
 
-    def add_event_queue(self, events):
+    def add_event_queue(self, screen, scene, main_player, events=[]):
+        self.events_waiting = [event for event in self.events_waiting if not isinstance(event, VoidEvent)]
+        events_unprocessed = events[:]
         """add events to event queue"""
-        self.events_waiting = self.events_waiting + events
+        for event in events_unprocessed:
+            if isinstance(event, tuple) and not eval(event[1]):
+                events_unprocessed.remove(event)
+            else:
+                break
+        events_stripped = events_unprocessed[:]
+        self.events_waiting += events_stripped + [VoidEvent()] if events_stripped else []
 
     def update_event_system(self, screen, scene, main_player):
         """update active & waiting dialogues"""
         # check if tile has event
         if not self.event_active and not self.events_waiting:
-            self.add_event_queue(scene.event_tiles[(main_player.tile_y, main_player.tile_x)])
+            self.add_event_queue(screen, scene, main_player,
+                                 scene.event_tiles[(main_player.tile_y, main_player.tile_x)])
         # check if event is finished and another event is waiting
         if self.event_active and self.event_active.object.finished:
             if isinstance(self.event_active, DialogueEvent) and self.event_active.object.finished:
@@ -83,6 +93,8 @@ class Player(Character):
                 self.scene_needs_to_be_changed = True
                 self.scene_waiting = self.event_active.object.desired_scene
             elif isinstance(self.event_active, WaitUntilEvent):
+                pass
+            elif isinstance(self.event_active, VoidEvent):
                 pass
             else:
                 raise NotImplementedError
