@@ -1,7 +1,7 @@
 # cs2023-pygame-project
 SSHS Computer Science 2023 pygame Project + GitHub Game Off 2023 Project
 
-made by Jaemin Shim (`@infopcgood`), 
+made by Jaemin Shim (`@infopcgood`), Yoonseo Cho (@cys0824), Jaeseong Hyun (@hyunjs96)
 
 ANY forms of Artificial Intelligence (GitHub Copilot, Tabnine Autocomplete, etc.) has NOT been used in this project.
 ## Given Assignment
