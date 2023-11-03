@@ -2,6 +2,7 @@
 from collections import defaultdict
 import pygame
 import src.constants.sound_constants as SoundConstants
+from src.base.assets import assets
 
 
 class Scene:
@@ -9,10 +10,10 @@ class Scene:
 
     def __init__(self, start_tile_x=16, start_tile_y=9):
         # bgm
-        self.bgm = None
+        self.bgm_name = None
         # load background and upper_layer image
-        self.background_image = pygame.image.load("textures/map/white.png").convert_alpha()
-        self.upper_layer_image = pygame.image.load("textures/map/white.png").convert_alpha()
+        self.background_image = assets.get_asset("textures/map/white.png")
+        self.upper_layer_image = assets.get_asset("textures/map/white.png")
         # set start tile
         self.start_tile_x = start_tile_x
         self.start_tile_y = start_tile_y
@@ -45,10 +46,10 @@ class Scene:
 
     def load(self, screen, main_player):
         """function called when scene is loaded"""
-        if self.bgm:
+        if self.bgm_name:
             if pygame.mixer.Channel(SoundConstants.BGM_CHANNEL).get_busy():
                 pygame.mixer.Channel(SoundConstants.BGM_CHANNEL).stop()
-            pygame.mixer.Channel(SoundConstants.BGM_CHANNEL).play(self.bgm)
+            pygame.mixer.Channel(SoundConstants.BGM_CHANNEL).play(assets.get_asset(self.bgm_name))
 
     def update_map(self, screen):
         """update map(background) every frame"""

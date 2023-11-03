@@ -5,6 +5,7 @@ import pygame
 import random
 import os
 import src.constants.base_constants as Constants
+from src.base.assets import assets
 from src.characters.player import Player
 import src.constants.spritesheet_constants as SpriteSheet_Constants
 import src.constants.effect_constants as EffectConstants
@@ -13,6 +14,7 @@ from src.scenes.start_scene import StartScene
 import src.constants.gui_constants as GUIConstants
 import src.constants.sound_constants as SoundConstants
 import src.constants.tilemap_constants as TileMap_Constants
+import src.constants.asset_constants as Asset_Constants
 from src.events.delay_event import DelayEvent
 
 
@@ -22,7 +24,7 @@ def limit_bounds(x, lower, upper):
     return min(max(x, lower), upper)
 
 
-### init and set global variables
+# init and set global variables
 pygame.init()
 window = pygame.display.set_mode((Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT))
 screen = pygame.Surface((Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT))
@@ -34,11 +36,22 @@ running = True
 initialized = False
 frame_index = 0
 
-### set basic objects
+# load assets
+for asset_folder_name in Asset_Constants.ASSET_FOLDERS:
+    for dir_name, _, files in os.walk(asset_folder_name):
+        for file_name in files:
+            assets.load_asset(os.path.join(os.path.relpath(dir_name), file_name))
+for font_folder_name in Asset_Constants.FONT_FOLDERS:
+    for dir_name, _, files in os.walk(font_folder_name):
+        for file_name in files:
+            for font_size in Asset_Constants.FONT_SIZES_TO_LOAD:
+                assets.load_asset(os.path.join(os.path.relpath(dir_name), file_name), font_size)
+
+# set basic objects
 scene = StartScene()
 main_player = Player()
 
-### screen for scaled screen
+# screen for scaled screen
 scaled_cropped_screen = pygame.Surface((Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT))
 
 while running:

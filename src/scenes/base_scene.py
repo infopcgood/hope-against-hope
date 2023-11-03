@@ -2,6 +2,7 @@
 from collections import defaultdict
 import pygame
 
+from src.base.assets import assets
 from src.characters.npc import NPC
 from src.events.delay_event import DelayEvent
 from src.scenes.scene import Scene
@@ -19,9 +20,9 @@ class BaseScene(Scene):
     """Base scene only used in testing"""
 
     def __init__(self, start_tile_x=13, start_tile_y=10):  # warning ignored because everything has to be redefined
-        self.bgm = None
-        self.background_image = pygame.image.load("textures/map/basic_background_with_houses.png").convert_alpha()
-        self.upper_layer_image = pygame.image.load("textures/upper_layer/basic_tree_upper_layer.png").convert_alpha()
+        self.bgm_name = None
+        self.background_image = assets.get_asset("textures/map/basic_background_with_houses.png")
+        self.upper_layer_image = assets.get_asset("textures/upper_layer/basic_tree_upper_layer.png")
         self.start_tile_x = start_tile_x
         self.start_tile_y = start_tile_y
         self.npcs = [

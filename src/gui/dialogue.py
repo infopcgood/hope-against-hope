@@ -4,6 +4,7 @@ import pygame
 import src.constants.base_constants as Constants
 import src.constants.gui_constants as GUIConstants
 import src.constants.sound_constants as SoundConstants
+from src.base.assets import assets
 
 
 class Dialogue:
@@ -19,7 +20,7 @@ class Dialogue:
         self.sound_weight = sound_weight
         self.finished = False
         if image_path:
-            self.image = pygame.image.load(image_path).convert_alpha()
+            self.image = assets.get_asset(image_path)
         else:
             self.image = None
 
@@ -34,7 +35,7 @@ class Dialogue:
             sound_filename = SoundConstants.END_DIALOGUE_SOUND_FILENAME[self.sound_weight]
         else:
             sound_filename = SoundConstants.MID_DIALOGUE_SOUND_FILENAME[self.sound_weight]
-        pygame.mixer.Channel(SoundConstants.DIALOGUE_CHANNEL).play(pygame.mixer.Sound(sound_filename))
+        pygame.mixer.Channel(SoundConstants.DIALOGUE_CHANNEL).play(assets.get_asset(sound_filename))
 
     def update(self, screen):
         """function that updates the dialogue(called repeatedly when dialogue is being displayed)"""
@@ -59,7 +60,7 @@ class Dialogue:
         transparent_surface = pygame.Surface((Constants.WINDOW_WIDTH, GUIConstants.DIALOGUE_HEIGHT))
         transparent_surface.set_alpha(GUIConstants.DIALOGUE_BACKGROUND_ALPHA)
         transparent_surface.fill((0, 0, 0))
-        label = pygame.font.Font(GUIConstants.DIALOGUE_FONT_FILENAME, GUIConstants.DIALOGUE_GUI_FONT_SIZE).render(
+        label = assets.get_asset(GUIConstants.DIALOGUE_FONT_FILENAME, GUIConstants.DIALOGUE_GUI_FONT_SIZE).render(
             label_text,
             GUIConstants.TEXT_ANTI_ALIASING,
             GUIConstants.DIALOGUE_TEXT_COLOR)

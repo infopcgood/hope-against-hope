@@ -25,7 +25,7 @@ class Player(Character):
         self.shake_screen = False
         super().__init__(tile_x, tile_y, facing, spritesheet_path)
 
-    ## event system is added here
+    # event system is added here
     # when stopping, check if tile has designated dialogue
     def stop(self, screen, scene, main_player):
         super().stop(screen, scene, main_player)

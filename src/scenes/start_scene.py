@@ -1,6 +1,8 @@
 """Start Scene"""
 from collections import defaultdict
 import pygame
+
+from src.base.assets import assets
 from src.characters.character import Character
 from src.scenes.base_scene import BaseScene
 from src.scenes.scene import Scene
@@ -14,9 +16,9 @@ class StartScene(Scene):
     """Start Scene"""
 
     def __init__(self, start_tile_x=16, start_tile_y=9):  # warning ignored because everything has to be redefined
-        self.bgm = pygame.mixer.Sound('sounds/bgm/8 Bit Adventure - David Renda.mp3')
-        self.background_image = pygame.image.load("textures/map/test_title_screen.png").convert_alpha()
-        self.upper_layer_image = pygame.image.load("textures/upper_layer/transparent.png").convert_alpha()
+        self.bgm_name = 'sounds/bgm/8 Bit Adventure - David Renda.mp3'
+        self.background_image = assets.get_asset("textures/map/test_title_screen.png")
+        self.upper_layer_image = assets.get_asset("textures/upper_layer/transparent.png")
         self.start_tile_x = start_tile_x
         self.start_tile_y = start_tile_y
         self.event_tiles = defaultdict(list)
