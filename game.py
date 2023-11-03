@@ -24,6 +24,10 @@ def limit_bounds(x, lower, upper):
     return min(max(x, lower), upper)
 
 
+def same_with_errors(a, b, error=1):
+    return bool(abs(a - b) <= error)
+
+
 # init and set global variables
 pygame.init()
 window = pygame.display.set_mode((Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT))
@@ -60,6 +64,10 @@ while running:
     # delay amount of FPS and get delta_time for correct speed
     delta_time = clock.tick(Constants.FPS)
     frame_index += 1
+    # fill screen black
+    screen.fill("black")
+    scaled_cropped_screen.fill("black")
+
     # check for quit & dialogue interrupt event
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -99,14 +107,23 @@ while running:
             elif keys_pressed[pygame.K_d] or keys_pressed[pygame.K_RIGHT]:
                 main_player.move_one_tile(SpriteSheet_Constants.FACING_RIGHT, screen, scene, main_player)
     # check if scene needs to be updated
-    if main_player.scene_needs_to_be_changed or not initialized:
-        if main_player.scene_needs_to_be_changed:
-            scene = main_player.scene_waiting
-        if not initialized:
+    skip_scene_load_flag = False
+    if (main_player.scene_needs_to_be_changed and scene.fading not in ["in", "out"]) or not initialized:
+        if main_player.scene_needs_to_be_changed and not skip_scene_load_flag:
+            if scene.fade_percent and scene.has_been_shown:
+                scene.fading = "out"
+                skip_scene_load_flag = True
+            else:
+                if initialized:
+                    scene = main_player.scene_waiting
+                print('fading in start')
+                scene.fading = "in"
+                scene.has_been_shown = True
+        if not skip_scene_load_flag:
+            scene.load(screen, main_player)
+            main_player.force_instant_move(scene.start_tile_x, scene.start_tile_y)
+            main_player.scene_needs_to_be_changed = False
             initialized = True
-        scene.load(screen, main_player)
-        main_player.force_instant_move(scene.start_tile_x, scene.start_tile_y)
-        main_player.scene_needs_to_be_changed = False
     # update screen in order of scene(map) -> NPCs -> player -> upper layer -> GUI (DialogueEvent) -> pygame.display
     # scene(map)
     scene.update_map(screen)
@@ -117,6 +134,37 @@ while running:
     main_player.update(screen, scene, main_player, delta_time)
     # upper_layer
     scene.update_upper_layer(screen)
+
+    # check for fade in and out effect
+    if scene.fading == "in":
+        print('really fading in')
+        if scene.will_fade_in:
+            scene.fade_percent += EffectConstants.FADE_SPEED
+            if same_with_errors(scene.fade_percent, 100):
+                scene.fading = ""
+                scene.fade_percent = 100
+        else:
+            scene.fading = ""
+            scene.fade_percent = 100
+    elif scene.fading == "out":
+        if scene.will_fade_out:
+            scene.fade_percent -= EffectConstants.FADE_SPEED
+            if same_with_errors(scene.fade_percent, 0):
+                scene.fading = ""
+                scene.fade_percent = 0
+                scene.has_been_shown = False
+        else:
+            scene.fading = ""
+            scene.fade_percent = 0
+            scene.has_been_shown = False
+
+    if scene.fade_percent == 0:
+        screen.set_alpha(0)
+    elif scene.fade_percent == 100:
+        screen.set_alpha(255)
+    else:
+        screen.set_alpha(max(0, min(255, int(scene.fade_percent * 255 / 100))))
+
     # focus in to player
     if scene.scale_screen and Constants.FOCUS_CAMERA_SCALE != 1:
         if Constants.SMOOTH_SCALE:
@@ -133,19 +181,17 @@ while running:
                 0, Constants.WINDOW_HEIGHT * (Constants.FOCUS_CAMERA_SCALE - 1)))
         scaled_cropped_screen.blit(raw_scaled_screen, scaled_screen_blit_location)
     else:
-        scaled_cropped_screen = screen.copy()
-    # post-processing before gui
-    post_processed_before_gui_screen = scaled_cropped_screen.copy()
+        scaled_cropped_screen.blit(screen, (0, 0))
+
     # GUI
     if main_player.event_active and main_player.event_active.needs_to_be_updated:
-        main_player.event_active.object.update(post_processed_before_gui_screen)
+        main_player.event_active.object.update(scaled_cropped_screen)
     # post processing after gui
     dest = (0, 0)
     if main_player.shake_screen:
         dest = (random.randint(-EffectConstants.SCREEN_SHAKE_AMOUNT, EffectConstants.SCREEN_SHAKE_AMOUNT),
                 random.randint(-EffectConstants.SCREEN_SHAKE_AMOUNT, EffectConstants.SCREEN_SHAKE_AMOUNT))
-    post_processed_after_gui_screen = post_processed_before_gui_screen.copy()
-    window.blit(post_processed_after_gui_screen, dest)
+    window.blit(scaled_cropped_screen, dest)
     # update display
     pygame.display.update()
 

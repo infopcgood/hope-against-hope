@@ -11,6 +11,12 @@ class Scene:
     def __init__(self, start_tile_x=16, start_tile_y=9):
         # bgm
         self.bgm_name = None
+        # fade settings
+        self.will_fade_in = True
+        self.will_fade_out = True
+        self.fade_percent = 0
+        self.fading = ""
+        self.has_been_shown = False
         # load background and upper_layer image
         self.background_image = assets.get_asset("textures/map/white.png")
         self.upper_layer_image = assets.get_asset("textures/map/white.png")
@@ -42,7 +48,7 @@ class Scene:
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
         # define if screen should be scaled
-        self.scale_screen = False
+        self.scale_screen = True
 
     def load(self, screen, main_player):
         """function called when scene is loaded"""

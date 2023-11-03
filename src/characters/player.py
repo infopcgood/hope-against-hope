@@ -21,7 +21,7 @@ class Player(Character):
         self.event_active = None
         self.event_needs_to_be_initialized = False
         self.events_waiting = []
-        self.scene_needs_to_be_changed = False
+        self.scene_needs_to_be_changed = True
         self.scene_waiting = None
         self.shake_screen = False
         super().__init__(tile_x, tile_y, facing, spritesheet_path)

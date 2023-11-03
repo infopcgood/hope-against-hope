@@ -19,12 +19,10 @@ from src.events.basic_function_event import BasicFunctionEvent
 class BaseScene(Scene):
     """Base scene only used in testing"""
 
-    def __init__(self, start_tile_x=13, start_tile_y=10):  # warning ignored because everything has to be redefined
-        self.bgm_name = None
+    def __init__(self, start_tile_x=13, start_tile_y=10):
+        super().__init__(start_tile_x, start_tile_y)
         self.background_image = assets.get_asset("textures/map/basic_background_with_houses.png")
         self.upper_layer_image = assets.get_asset("textures/upper_layer/basic_tree_upper_layer.png")
-        self.start_tile_x = start_tile_x
-        self.start_tile_y = start_tile_y
         self.npcs = [
             NPC(32, 10, SpriteSheet_Constants.FACING_LEFT, 'textures/spritesheets/demo2.png', [DialogueEvent('뭘 봐?')])]
         self.event_tiles = defaultdict(list)
@@ -52,7 +50,6 @@ class BaseScene(Scene):
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
-        self.scale_screen = True
 
     def load(self, screen, main_player):
         super().load(screen, main_player)

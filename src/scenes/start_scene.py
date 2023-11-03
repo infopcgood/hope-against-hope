@@ -16,13 +16,11 @@ class StartScene(Scene):
     """Start Scene"""
 
     def __init__(self, start_tile_x=16, start_tile_y=9):  # warning ignored because everything has to be redefined
+        super().__init__(start_tile_x, start_tile_y)
+        self.will_fade_in = False
         self.bgm_name = 'sounds/bgm/8 Bit Adventure - David Renda.mp3'
         self.background_image = assets.get_asset("textures/map/test_title_screen.png")
         self.upper_layer_image = assets.get_asset("textures/upper_layer/transparent.png")
-        self.start_tile_x = start_tile_x
-        self.start_tile_y = start_tile_y
-        self.event_tiles = defaultdict(list)
-        self.npcs = []
         self.movable_tiles = [
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
