@@ -103,10 +103,10 @@ while running:
 
         scaled_screen_blit_location = (
             - limit_bounds(
-                main_player.center_x * Constants.FOCUS_CAMERA_SCALE - Constants.WINDOW_WIDTH // 2,
+                main_player.x * Constants.FOCUS_CAMERA_SCALE - Constants.WINDOW_WIDTH // 2,
                 0, Constants.WINDOW_WIDTH * (Constants.FOCUS_CAMERA_SCALE - 1)),
             - limit_bounds(
-                main_player.center_y * Constants.FOCUS_CAMERA_SCALE - Constants.WINDOW_HEIGHT // 2,
+                main_player.y * Constants.FOCUS_CAMERA_SCALE - Constants.WINDOW_HEIGHT // 2,
                 0, Constants.WINDOW_HEIGHT * (Constants.FOCUS_CAMERA_SCALE - 1)))
         scaled_cropped_screen.blit(raw_scaled_screen, scaled_screen_blit_location)
     else:
@@ -128,7 +128,6 @@ while running:
 
     # manual garbage collection
     if Constants.GARBAGE_COLLECTION_FRAMES and frame_index % Constants.GARBAGE_COLLECTION_FRAMES == 0:
-        print('Garbage is collected.')
         gc.collect()
 pygame.quit()
 print("Thanks for playing!")

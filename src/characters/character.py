@@ -22,8 +22,8 @@ class Character(pygame.sprite.Sprite):
         # set x and y
         self.x = tile_x * TileMap_Constants.TILE_SIZE
         self.y = tile_y * TileMap_Constants.TILE_SIZE
-        self.center_x = self.x - 3 * SpriteSheet_Constants.SPRITE_WIDTH // 4
-        self.center_y = self.y - SpriteSheet_Constants.SPRITE_HEIGHT // 2
+        self.corner_x = self.x - 3 * SpriteSheet_Constants.SPRITE_WIDTH // 4
+        self.corner_y = self.y - SpriteSheet_Constants.SPRITE_HEIGHT // 2
         # load character spritesheet
         self.spritesheet = SpriteSheet(spritesheet_path)
         # set default values for animation system
@@ -104,8 +104,8 @@ class Character(pygame.sprite.Sprite):
         # move character
         self.x += SpriteSheet_Constants.SPEED_X[self.facing] * dt
         self.y += SpriteSheet_Constants.SPEED_Y[self.facing] * dt
-        self.center_x = self.x - 3 * SpriteSheet_Constants.SPRITE_WIDTH // 4
-        self.center_y = self.y - SpriteSheet_Constants.SPRITE_HEIGHT // 2
+        self.corner_x = self.x - 3 * SpriteSheet_Constants.SPRITE_WIDTH // 4
+        self.corner_y = self.y - SpriteSheet_Constants.SPRITE_HEIGHT // 2
 
     def stop(self, screen, scene, main_player):
         """forcibly stop character and correct x and y values. extra arguments are for player event system"""
@@ -134,6 +134,6 @@ class Character(pygame.sprite.Sprite):
         # draw character on screen
         if self.visible:
             rect = (
-                self.center_x, self.center_y, SpriteSheet_Constants.SPRITE_WIDTH, SpriteSheet_Constants.SPRITE_HEIGHT)
+                self.corner_x, self.corner_y, SpriteSheet_Constants.SPRITE_WIDTH, SpriteSheet_Constants.SPRITE_HEIGHT)
             image = self.spritesheet.image_at_anim(self.facing, self.anim, self.anim_index)
             screen.blit(image, rect)
