@@ -46,6 +46,8 @@ class Scene:
 
     def load(self, screen, main_player):
         """function called when scene is loaded"""
+        main_player.event_active = False
+        main_player.events_waiting = []
         if self.bgm_name:
             if pygame.mixer.Channel(SoundConstants.BGM_CHANNEL).get_busy():
                 pygame.mixer.Channel(SoundConstants.BGM_CHANNEL).stop()
