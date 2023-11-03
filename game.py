@@ -14,6 +14,13 @@ import src.constants.gui_constants as GUIConstants
 import src.constants.sound_constants as SoundConstants
 from src.events.delay_event import DelayEvent
 
+
+def limit_bounds(x, lower, upper):
+    if lower > upper:
+        lower, upper = upper, lower
+    return min(max(x, lower), upper)
+
+
 ### init and set global variables
 pygame.init()
 window = pygame.display.set_mode((Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT))
@@ -29,6 +36,9 @@ frame_index = 0
 ### set basic objects
 scene = StartScene()
 main_player = Player()
+
+### screen for scaled screen
+scaled_cropped_screen = pygame.Surface((Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT))
 
 while running:
     # delay amount of FPS and get delta_time for correct speed
@@ -84,8 +94,29 @@ while running:
     main_player.update(screen, scene, main_player, delta_time)
     # upper_layer
     scene.update_upper_layer(screen)
-    # post processing before gui
-    post_processed_before_gui_screen = screen.copy()
+    # zoom in to player, has bugs TODO
+    if scene.scale_screen and Constants.FOCUS_CAMERA_SCALE != 1:
+        if Constants.SMOOTH_SCALE:
+            raw_scaled_screen = pygame.transform.smoothscale(screen, (
+                Constants.WINDOW_WIDTH * Constants.FOCUS_CAMERA_SCALE,
+                Constants.WINDOW_HEIGHT * Constants.WINDOW_HEIGHT))
+        else:
+            raw_scaled_screen = pygame.transform.scale(screen, (
+                Constants.WINDOW_WIDTH * Constants.FOCUS_CAMERA_SCALE,
+                Constants.WINDOW_HEIGHT * Constants.WINDOW_HEIGHT))
+
+        scaled_screen_blit_location = (
+            limit_bounds(
+                main_player.x * Constants.FOCUS_CAMERA_SCALE - Constants.FOCUS_CAMERA_SCALE * Constants.WINDOW_WIDTH // 2,
+                0, Constants.WINDOW_WIDTH * (Constants.FOCUS_CAMERA_SCALE - 1)),
+            limit_bounds(
+                main_player.y * Constants.FOCUS_CAMERA_SCALE - Constants.FOCUS_CAMERA_SCALE * Constants.WINDOW_HEIGHT // 2,
+                0, Constants.WINDOW_HEIGHT * (Constants.FOCUS_CAMERA_SCALE - 1)))
+        scaled_cropped_screen.blit(raw_scaled_screen, scaled_screen_blit_location)
+    else:
+        scaled_cropped_screen = screen.copy()
+    # post-processing before gui
+    post_processed_before_gui_screen = scaled_cropped_screen.copy()
     # GUI
     if Player.event_active and Player.event_active.needs_to_be_updated:
         Player.event_active.object.update(post_processed_before_gui_screen)
