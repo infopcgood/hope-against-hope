@@ -76,14 +76,14 @@ while running:
             elif keys_pressed[pygame.K_d] or keys_pressed[pygame.K_RIGHT]:
                 main_player.move_one_tile(SpriteSheet_Constants.FACING_RIGHT, screen, scene, main_player)
     # check if scene needs to be updated
-    if Player.scene_needs_to_be_changed or not initialized:
-        if Player.scene_needs_to_be_changed:
-            scene = Player.scene_waiting
+    if main_player.scene_needs_to_be_changed or not initialized:
+        if main_player.scene_needs_to_be_changed:
+            scene = main_player.scene_waiting
         if not initialized:
             initialized = True
         scene.load(screen, main_player)
         main_player.force_instant_move(scene.start_tile_x, scene.start_tile_y)
-        Player.scene_needs_to_be_changed = False
+        main_player.scene_needs_to_be_changed = False
     # update screen in order of scene(map) -> NPCs -> player -> upper layer -> GUI (DialogueEvent) -> pygame.display
     # scene(map)
     scene.update_map(screen)
@@ -114,11 +114,11 @@ while running:
     # post-processing before gui
     post_processed_before_gui_screen = scaled_cropped_screen.copy()
     # GUI
-    if Player.event_active and Player.event_active.needs_to_be_updated:
-        Player.event_active.object.update(post_processed_before_gui_screen)
+    if main_player.event_active and main_player.event_active.needs_to_be_updated:
+        main_player.event_active.object.update(post_processed_before_gui_screen)
     # post processing after gui
     dest = (0, 0)
-    if Player.shake_screen:
+    if main_player.shake_screen:
         dest = (random.randint(-EffectConstants.SCREEN_SHAKE_AMOUNT, EffectConstants.SCREEN_SHAKE_AMOUNT),
                 random.randint(-EffectConstants.SCREEN_SHAKE_AMOUNT, EffectConstants.SCREEN_SHAKE_AMOUNT))
     post_processed_after_gui_screen = post_processed_before_gui_screen.copy()
@@ -127,7 +127,7 @@ while running:
     pygame.display.update()
 
     # manual garbage collection
-    if Constants.GARBAGE_COLLECTION_FRAMES and frame_index % Constants.GARBAGE_COLLECTION_FRAMES == 0:
+    if Constants.GARBAGE_COLLECTION_INTERVAL_FRAMES and frame_index % Constants.GARBAGE_COLLECTION_INTERVAL_FRAMES == 0:
         gc.collect()
 pygame.quit()
 print("Thanks for playing!")
