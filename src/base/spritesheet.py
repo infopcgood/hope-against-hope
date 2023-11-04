@@ -7,9 +7,10 @@ from src.base.assets import assets
 class SpriteSheet:
     """Basic SpriteSheet class"""
 
-    def __init__(self, filename):
+    def __init__(self, filename, sprite_size=(64, 64)):
         # load spritesheet
         self.spritesheet = assets.get_asset(filename)
+        self.sprite_size = sprite_size
 
     def image_at_rect(self, rectangle):
         """get image at specified rectangle"""
@@ -20,7 +21,11 @@ class SpriteSheet:
 
     def image_at_anim(self, facing, anim_type, anim_index):
         """get image of specified frame of animation"""
-        return self.image_at_rect((SpriteSheet_Constants.SPRITE_WIDTH * anim_index,
-                                   SpriteSheet_Constants.SPRITE_HEIGHT * (
+        return self.image_at_rect((self.sprite_size[0] * anim_index,
+                                   self.sprite_size[1] * (
                                        anim_type if anim_type == SpriteSheet_Constants.ACTION_DEAD else anim_type + facing),
-                                   SpriteSheet_Constants.SPRITE_WIDTH, SpriteSheet_Constants.SPRITE_HEIGHT))
+                                   self.sprite_size[0], self.sprite_size[1]))
+
+    def image_at_emote(self, emote, emote_index):
+        return self.image_at_rect(
+            (self.sprite_size[0] * emote_index, self.sprite_size[1] * emote, self.sprite_size[0], self.sprite_size[1]))

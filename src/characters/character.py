@@ -22,10 +22,11 @@ class Character(pygame.sprite.Sprite):
         # set x and y
         self.x = tile_x * TileMap_Constants.TILE_SIZE
         self.y = tile_y * TileMap_Constants.TILE_SIZE
-        self.corner_x = self.x - 3 * SpriteSheet_Constants.SPRITE_WIDTH // 4
-        self.corner_y = self.y - SpriteSheet_Constants.SPRITE_HEIGHT // 2
+        self.corner_x = self.x - 3 * 64 // 4
+        self.corner_y = self.y - 64 // 2
         # load character spritesheet
         self.spritesheet = SpriteSheet(spritesheet_path)
+        self.emote_spritesheet = SpriteSheet('textures/spritesheets/emote_balloons.png', (32, 32))
         # set default values for animation system
         self.anim = SpriteSheet_Constants.ACTION_IDLE
         self.anim_index = 0
@@ -35,6 +36,10 @@ class Character(pygame.sprite.Sprite):
         self.is_paralyzed = False
         self.playing_anim = False
         self.visible = True
+        # set default values for emote system
+        self.emote = None
+        self.emote_index = 0
+        self.emote_update_index = 0
         # set character facing
         self.facing = facing
 
@@ -104,6 +109,19 @@ class Character(pygame.sprite.Sprite):
         # increment index
         self.anim_update_index += 1
 
+    def update_emote(self, screen, scene, main_player):
+        # emote animation here.
+        if self.emote_update_index >= SpriteSheet_Constants.EMOTE_UPDATE_THRESHOLD and self.emote_index < \
+                SpriteSheet_Constants.EMOTE_INDEX_CNT[self.emote]:
+            self.emote_update_index = 0
+            self.emote_index += 1
+            # stop emote
+            if self.emote_index >= SpriteSheet_Constants.EMOTE_INDEX_CNT[self.emote]:
+                self.emote = None
+                self.emote_index = 0
+                self.emote_update_index = 0
+        self.emote_update_index += 1
+
     def move(self, screen, scene, main_player, dt):
         """this is where real movement happenes."""
         # move character
@@ -124,8 +142,8 @@ class Character(pygame.sprite.Sprite):
 
     def update(self, screen, scene, main_player, dt):
         """update function called every frame"""
-        self.corner_x = self.x - 3 * SpriteSheet_Constants.SPRITE_WIDTH // 4
-        self.corner_y = self.y - SpriteSheet_Constants.SPRITE_HEIGHT // 2
+        self.corner_x = self.x - 3 * 64 // 4
+        self.corner_y = self.y - 64 // 2
         # move or stop character depending on position
         if self.is_moving:
             self.move(screen, scene, main_player, dt)
@@ -136,9 +154,14 @@ class Character(pygame.sprite.Sprite):
         # continue animation
         if self.playing_anim:
             self.update_anim(screen, scene, main_player)
+        if self.emote is not None:
+            self.update_emote(screen, scene, main_player)
         # draw character on screen
         if self.visible:
-            rect = (
-                self.corner_x, self.corner_y, SpriteSheet_Constants.SPRITE_WIDTH, SpriteSheet_Constants.SPRITE_HEIGHT)
+            rect = (self.corner_x, self.corner_y, 64, 64)
             image = self.spritesheet.image_at_anim(self.facing, self.anim, self.anim_index)
             screen.blit(image, rect)
+        if self.emote is not None:
+            emote_rect = (self.x - 32, self.y - 56)
+            emote_image = self.emote_spritesheet.image_at_emote(self.emote, self.emote_index)
+            screen.blit(emote_image, emote_rect)
