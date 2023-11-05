@@ -17,6 +17,9 @@ class Scene:
         self.fade_percent = 0
         self.fading = ""
         self.has_been_shown = False
+        # set scene size
+        self.scene_tiles_x = 32
+        self.scene_tiles_y = 18
         # load background and upper_layer image
         self.background_image = assets.get_asset("textures/map/white.png")
         self.upper_layer_image = assets.get_asset("textures/map/white.png")

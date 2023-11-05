@@ -13,8 +13,8 @@ class Character(pygame.sprite.Sprite):
         """hidden method for error correction"""
         return bool(abs(a - b) <= error)
 
-    def __init__(self, tile_x=TileMap_Constants.TILEMAP_WIDTH // 2, tile_y=TileMap_Constants.TILEMAP_HEIGHT // 2,
-                 facing=SpriteSheet_Constants.FACING_RIGHT, spritesheet_path='textures/spritesheets/demo.png'):
+    def __init__(self, tile_x=16, tile_y=9, facing=SpriteSheet_Constants.FACING_RIGHT,
+                 spritesheet_path='textures/spritesheets/demo.png'):
         super().__init__()
         # set tile x and y
         self.tile_x = tile_x
@@ -63,10 +63,10 @@ class Character(pygame.sprite.Sprite):
         self.playing_anim = True
         # check if destination tile is valid
         if not forced:
-            if (self.tile_x + TileMap_Constants.MOVEMENT_X[direction] > TileMap_Constants.TILEMAP_X_MAX or \
-                    self.tile_x + TileMap_Constants.MOVEMENT_X[direction] < TileMap_Constants.TILEMAP_X_MIN or \
-                    self.tile_y + TileMap_Constants.MOVEMENT_Y[direction] > TileMap_Constants.TILEMAP_Y_MAX or \
-                    self.tile_y + TileMap_Constants.MOVEMENT_Y[direction] < TileMap_Constants.TILEMAP_Y_MIN):
+            if (self.tile_x + TileMap_Constants.MOVEMENT_X[direction] > scene.scene_tiles_x or \
+                    self.tile_x + TileMap_Constants.MOVEMENT_X[direction] < 1 or \
+                    self.tile_y + TileMap_Constants.MOVEMENT_Y[direction] > scene.scene_tiles_y or \
+                    self.tile_y + TileMap_Constants.MOVEMENT_Y[direction] < 1):
                 self.stop(screen, scene, main_player)
                 self.facing = direction
                 return

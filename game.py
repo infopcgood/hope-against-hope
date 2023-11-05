@@ -117,6 +117,8 @@ while running:
             else:
                 if initialized:
                     scene = main_player.scene_waiting
+                screen = pygame.Surface((TileMap_Constants.TILE_SIZE * scene.scene_tiles_x,
+                                         TileMap_Constants.TILE_SIZE * scene.scene_tiles_y))
                 scene.fading = "in"
                 scene.has_been_shown = True
         if not skip_scene_load_flag:

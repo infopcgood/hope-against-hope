@@ -16,8 +16,8 @@ import src.constants.spritesheet_constants as SpriteSheet_Constants
 class Player(Character):
     """Player class that inherits Character"""
 
-    def __init__(self, tile_x=TileMap_Constants.TILEMAP_WIDTH // 2, tile_y=TileMap_Constants.TILEMAP_HEIGHT // 2,
-                 facing=SpriteSheet_Constants.FACING_RIGHT, spritesheet_path='textures/spritesheets/demo.png'):
+    def __init__(self, tile_x=16, tile_y=9, facing=SpriteSheet_Constants.FACING_RIGHT,
+                 spritesheet_path='textures/spritesheets/demo.png'):
         self.event_active = None
         self.event_needs_to_be_initialized = False
         self.events_waiting = []
