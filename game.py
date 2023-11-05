@@ -16,6 +16,7 @@ import src.constants.sound_constants as SoundConstants
 import src.constants.tilemap_constants as TileMap_Constants
 import src.constants.asset_constants as Asset_Constants
 from src.events.delay_event import DelayEvent
+from src.base.preferences import preferences
 
 
 def limit_bounds(x, lower, upper):
@@ -35,7 +36,7 @@ screen = pygame.Surface((Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT))
 pygame.event.set_allowed([pygame.QUIT, pygame.KEYDOWN, pygame.KEYUP])
 pygame.display.set_caption("Game")
 for mixer_id in range(8):
-    pygame.mixer.Channel(mixer_id).set_volume(SoundConstants.VOLUME)
+    pygame.mixer.Channel(mixer_id).set_volume(preferences.get_preference('volume'))
 clock = pygame.time.Clock()
 running = True
 initialized = False
