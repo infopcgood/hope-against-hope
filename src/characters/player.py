@@ -17,14 +17,14 @@ class Player(Character):
     """Player class that inherits Character"""
 
     def __init__(self, tile_x=16, tile_y=9, facing=SpriteSheet_Constants.FACING_RIGHT,
-                 spritesheet_path='textures/spritesheets/demo.png'):
+                 spritesheet_path='textures/spritesheets/demo.png', max_hp=20):
+        super().__init__(tile_x, tile_y, facing, spritesheet_path, max_hp)
         self.event_active = None
         self.event_needs_to_be_initialized = False
         self.events_waiting = []
         self.scene_needs_to_be_changed = True
         self.scene_waiting = None
         self.shake_screen = False
-        super().__init__(tile_x, tile_y, facing, spritesheet_path)
 
     # event system is added here
     # when stopping, check if tile has designated dialogue

@@ -9,6 +9,7 @@ from src.base.assets import assets
 from src.characters.player import Player
 import src.constants.spritesheet_constants as SpriteSheet_Constants
 import src.constants.effect_constants as EffectConstants
+from src.extra.functions import same_with_errors
 from src.gui.testing_gui import TestingGUI
 from src.scenes.start_scene import StartScene
 import src.constants.gui_constants as GUIConstants
@@ -23,10 +24,6 @@ def limit_bounds(x, lower, upper):
     if lower > upper:
         lower, upper = upper, lower
     return min(max(x, lower), upper)
-
-
-def same_with_errors(a, b, error=1):
-    return bool(abs(a - b) <= error)
 
 
 # init and set global variables

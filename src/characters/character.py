@@ -4,17 +4,14 @@ import pygame
 from src.base.spritesheet import SpriteSheet
 import src.constants.spritesheet_constants as SpriteSheet_Constants
 import src.constants.tilemap_constants as TileMap_Constants
+from src.extra.functions import same_with_errors
 
 
 class Character(pygame.sprite.Sprite):
     """basic character class"""
 
-    def _sameWithErrors(self, a, b, error=1):
-        """hidden method for error correction"""
-        return bool(abs(a - b) <= error)
-
     def __init__(self, tile_x=16, tile_y=9, facing=SpriteSheet_Constants.FACING_RIGHT,
-                 spritesheet_path='textures/spritesheets/demo.png'):
+                 spritesheet_path='textures/spritesheets/demo.png', max_hp=20):
         super().__init__()
         # set tile x and y
         self.tile_x = tile_x
@@ -44,6 +41,10 @@ class Character(pygame.sprite.Sprite):
         self.facing = facing
         self.vx = 0
         self.vy = 0
+        self.rect = pygame.Rect(self.x - 16, self.y - 50, 32, 50)
+        # set hp
+        self.max_hp = max_hp
+        self.hp = self.max_hp
 
     def force_instant_move(self, tile_x, tile_y):
         """force instant movement"""
@@ -51,6 +52,7 @@ class Character(pygame.sprite.Sprite):
         self.tile_y = tile_y
         self.x = tile_x * TileMap_Constants.TILE_SIZE
         self.y = tile_y * TileMap_Constants.TILE_SIZE
+        self.rect = pygame.Rect(self.x - 16, self.y - 50, 32, 50)
 
     def face(self, direction):
         """force character to face certain direction"""
@@ -131,6 +133,7 @@ class Character(pygame.sprite.Sprite):
         # move character
         self.x += self.vx * dt
         self.y += self.vy * dt
+        self.rect.move_ip(self.vx * dt, self.vy * dt)
 
     def stop(self, screen, scene, main_player):
         """forcibly stop character and correct x and y values. extra arguments are for player event system"""
@@ -151,9 +154,8 @@ class Character(pygame.sprite.Sprite):
         # move or stop character depending on position
         if self.is_moving:
             self.move(screen, scene, main_player, dt)
-        if self.is_moving and self._sameWithErrors(self.x,
-                                                   self.tile_x * TileMap_Constants.TILE_SIZE) and self._sameWithErrors(
-            self.y, self.tile_y * TileMap_Constants.TILE_SIZE):
+        if self.is_moving and same_with_errors(self.x, self.tile_x * TileMap_Constants.TILE_SIZE) and same_with_errors(
+                self.y, self.tile_y * TileMap_Constants.TILE_SIZE):
             self.stop(screen, scene, main_player)
         # continue animation
         if self.playing_anim:

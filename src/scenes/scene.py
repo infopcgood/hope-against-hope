@@ -2,6 +2,7 @@
 from collections import defaultdict
 import pygame
 import src.constants.sound_constants as SoundConstants
+import src.constants.tilemap_constants as TileMap_Constants
 from src.base.assets import assets
 
 
@@ -20,6 +21,8 @@ class Scene:
         # set scene size
         self.scene_tiles_x = 32
         self.scene_tiles_y = 18
+        self.scene_width = self.scene_tiles_x * TileMap_Constants.TILE_SIZE
+        self.scene_height = self.scene_tiles_y * TileMap_Constants.TILE_SIZE
         # load background and upper_layer image
         self.background_image = assets.get_asset("textures/map/white.png")
         self.upper_layer_image = assets.get_asset("textures/map/white.png")
@@ -28,6 +31,7 @@ class Scene:
         self.start_tile_y = start_tile_y
         # initialize event and scene_chagnge tiles
         self.event_tiles = defaultdict(list)
+        self.event_on_load = []
         # npcs
         self.npcs = []
         # define what tiles are steppable
@@ -57,6 +61,9 @@ class Scene:
         """function called when scene is loaded"""
         main_player.event_active = False
         main_player.events_waiting = []
+        if self.event_on_load:
+            main_player.add_event_queue(screen, self, main_player, self.event_on_load)
+            main_player.update_event_system(screen, self, main_player)
         if self.bgm_name:
             if pygame.mixer.Channel(SoundConstants.BGM_CHANNEL).get_busy():
                 pygame.mixer.Channel(SoundConstants.BGM_CHANNEL).stop()
