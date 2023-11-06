@@ -118,8 +118,7 @@ while running:
             else:
                 if initialized:
                     scene = main_player.scene_waiting
-                screen = pygame.Surface((TileMap_Constants.TILE_SIZE * scene.scene_tiles_x,
-                                         TileMap_Constants.TILE_SIZE * scene.scene_tiles_y))
+                screen = pygame.Surface((scene.scene_width, scene.scene_height))
                 scene.fading = "in"
                 scene.has_been_shown = True
         if not skip_scene_load_flag:
@@ -174,14 +173,19 @@ while running:
         else:
             raw_scaled_screen = pygame.transform.scale_by(screen, Constants.FOCUS_CAMERA_SCALE)
 
-        scaled_screen_blit_location = (
-            - limit_bounds(
+        if Constants.WINDOW_WIDTH >= scene.scene_width * Constants.FOCUS_CAMERA_SCALE:
+            limit_bounds_x = - limit_bounds(
                 main_player.x * Constants.FOCUS_CAMERA_SCALE - Constants.WINDOW_WIDTH // 2,
-                0, Constants.WINDOW_WIDTH * (Constants.FOCUS_CAMERA_SCALE - 1)),
-            - limit_bounds(
+                0, scene.scene_width * Constants.FOCUS_CAMERA_SCALE - Constants.WINDOW_WIDTH)
+        else:
+            limit_bounds_x = - Constants.WINDOW_WIDTH // 2 + scene.scene_width * Constants.FOCUS_CAMERA_SCALE
+        if Constants.WINDOW_HEIGHT >= scene.scene_height * Constants.FOCUS_CAMERA_SCALE:
+            limit_bounds_y = - limit_bounds(
                 main_player.y * Constants.FOCUS_CAMERA_SCALE - Constants.WINDOW_HEIGHT // 2,
-                0, Constants.WINDOW_HEIGHT * (Constants.FOCUS_CAMERA_SCALE - 1)))
-        scaled_cropped_screen.blit(raw_scaled_screen, scaled_screen_blit_location)
+                0, scene.scene_height * Constants.FOCUS_CAMERA_SCALE - Constants.WINDOW_HEIGHT)
+        else:
+            limit_bounds_y = - Constants.WINDOW_HEIGHT // 2 + scene.scene_height * Constants.FOCUS_CAMERA_SCALE
+        scaled_screen_blit_location = (limit_bounds_x, limit_bounds_y)
     else:
         scaled_cropped_screen.blit(screen, (0, 0))
 
