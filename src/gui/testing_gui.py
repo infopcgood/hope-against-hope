@@ -21,7 +21,7 @@ class TestingGUI:
             f'Real Pos: ({main_player.x:.2f}, {main_player.y:.2f})', GUIConstants.TEXT_ANTI_ALIASING, (255, 255, 255))
         movable_tiles_label = assets.get_asset(GUIConstants.TESTING_GUI_FONT_FILENAME,
                                                GUIConstants.TESTING_GUI_FONT_SIZE).render(
-            f'Tile Info: movable[{main_player.tile_y}][{main_player.tile_x}] = {movable_tiles[main_player.tile_y][main_player.tile_x]}',
+            f'Speed: ({main_player.vx:.2f}, {main_player.vy:.2f})',
             GUIConstants.TEXT_ANTI_ALIASING, (255, 255, 255))
         fps_label = assets.get_asset(GUIConstants.TESTING_GUI_FONT_FILENAME, GUIConstants.TESTING_GUI_FONT_SIZE).render(
             f'FPS: {fps:.0f}', GUIConstants.TEXT_ANTI_ALIASING, (255, 255, 255))

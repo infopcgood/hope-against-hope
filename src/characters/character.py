@@ -42,6 +42,8 @@ class Character(pygame.sprite.Sprite):
         self.emote_update_index = 0
         # set character facing
         self.facing = facing
+        self.vx = 0
+        self.vy = 0
 
     def force_instant_move(self, tile_x, tile_y):
         """force instant movement"""
@@ -89,6 +91,8 @@ class Character(pygame.sprite.Sprite):
         self.is_moving = True
         self.tile_x += TileMap_Constants.MOVEMENT_X[direction]
         self.tile_y += TileMap_Constants.MOVEMENT_Y[direction]
+        self.vx = SpriteSheet_Constants.SPEED_X[direction]
+        self.vy = SpriteSheet_Constants.SPEED_Y[direction]
 
     def update_anim(self, screen, scene, main_player):
         """animation is controlled here"""
@@ -125,8 +129,8 @@ class Character(pygame.sprite.Sprite):
     def move(self, screen, scene, main_player, dt):
         """this is where real movement happenes."""
         # move character
-        self.x += SpriteSheet_Constants.SPEED_X[self.facing] * dt
-        self.y += SpriteSheet_Constants.SPEED_Y[self.facing] * dt
+        self.x += self.vx * dt
+        self.y += self.vy * dt
 
     def stop(self, screen, scene, main_player):
         """forcibly stop character and correct x and y values. extra arguments are for player event system"""
@@ -139,11 +143,11 @@ class Character(pygame.sprite.Sprite):
         # correct x and y values
         self.x = self.tile_x * TileMap_Constants.TILE_SIZE
         self.y = self.tile_y * TileMap_Constants.TILE_SIZE
+        self.vx = 0
+        self.vy = 0
 
-    def update(self, screen, scene, main_player, dt):
+    def update(self, screen, scene, main_player, dt, externally_controlled_movement=False):
         """update function called every frame"""
-        self.corner_x = self.x - 3 * 64 // 4
-        self.corner_y = self.y - 64 // 2
         # move or stop character depending on position
         if self.is_moving:
             self.move(screen, scene, main_player, dt)
@@ -156,6 +160,8 @@ class Character(pygame.sprite.Sprite):
             self.update_anim(screen, scene, main_player)
         if self.emote is not None:
             self.update_emote(screen, scene, main_player)
+        self.corner_x = self.x - 3 * 64 // 4
+        self.corner_y = self.y - 64 // 2
         # draw character on screen
         if self.visible:
             rect = (self.corner_x, self.corner_y, 64, 64)
