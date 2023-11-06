@@ -173,19 +173,20 @@ while running:
         else:
             raw_scaled_screen = pygame.transform.scale_by(screen, Constants.FOCUS_CAMERA_SCALE)
 
-        if Constants.WINDOW_WIDTH >= scene.scene_width * Constants.FOCUS_CAMERA_SCALE:
+        if Constants.WINDOW_WIDTH <= scene.scene_width * Constants.FOCUS_CAMERA_SCALE:
             limit_bounds_x = - limit_bounds(
                 main_player.x * Constants.FOCUS_CAMERA_SCALE - Constants.WINDOW_WIDTH // 2,
                 0, scene.scene_width * Constants.FOCUS_CAMERA_SCALE - Constants.WINDOW_WIDTH)
         else:
             limit_bounds_x = - Constants.WINDOW_WIDTH // 2 + scene.scene_width * Constants.FOCUS_CAMERA_SCALE
-        if Constants.WINDOW_HEIGHT >= scene.scene_height * Constants.FOCUS_CAMERA_SCALE:
+        if Constants.WINDOW_HEIGHT <= scene.scene_height * Constants.FOCUS_CAMERA_SCALE:
             limit_bounds_y = - limit_bounds(
                 main_player.y * Constants.FOCUS_CAMERA_SCALE - Constants.WINDOW_HEIGHT // 2,
                 0, scene.scene_height * Constants.FOCUS_CAMERA_SCALE - Constants.WINDOW_HEIGHT)
         else:
             limit_bounds_y = - Constants.WINDOW_HEIGHT // 2 + scene.scene_height * Constants.FOCUS_CAMERA_SCALE
         scaled_screen_blit_location = (limit_bounds_x, limit_bounds_y)
+        scaled_cropped_screen.blit(raw_scaled_screen, scaled_screen_blit_location)
     else:
         scaled_cropped_screen.blit(screen, (0, 0))
 
