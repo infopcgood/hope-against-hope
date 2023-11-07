@@ -4,59 +4,29 @@ import pygame
 
 from src.base.assets import assets
 import src.constants.sound_constants as SoundConstants
+from src.base.space import Space
+from src.characters.enemy import Enemy
 from src.extra.functions import same_with_errors
 
 
-class Battle:
-    def __init__(self, start_x=128, start_y=448):
-        # bgm
-        self.bgm_name = None
-        # fade settings
-        self.will_fade_in = True
-        self.will_fade_out = True
-        self.fade_percent = 0
-        self.fading = ""
-        self.has_been_shown = False
-        # set scene size
-        self.scene_width = 1024
-        self.scene_height = 576
-        # load background and upper_layer image
-        self.background_image = assets.get_asset("textures/map/white.png")
-        self.upper_layer_image = assets.get_asset("textures/map/white.png")
-        # set start pos
-        self.start_x = start_x
-        self.start_y = start_y
+class Battle(Space):
+    def __init__(self, width=1024, height=576, start_x=512, start_y=288, background_image="textures/map/white.png",
+                 upper_layer_image="textures/upper_layer/transparent.png", bgm="", will_fade_in=True,
+                 will_fade_out=True, scale_screen=True, events_on_load=[], events_on_boss_health=defaultdict(float),
+                 event_on_clear=[], boss=None, enemies=[], terrain_rect=[], g_accel=10):
+        super().__init__(width, height, start_x, start_y, background_image, upper_layer_image, bgm, will_fade_in,
+                         will_fade_out, scale_screen, events_on_load)
         # set events on health (cur/full)
-        self.event_on_boss_health = {}
-        self.event_on_load = []
-        self.event_on_clear = []
+        self.event_on_boss_health = events_on_boss_health
+        self.event_on_clear = event_on_clear
         # set enemy
-        self.boss = None
-        self.enemies = []
+        self.boss = boss
+        self.enemies = enemies
         # define terrain bodies
-        self.terrain_rect = [pygame.Rect(0, 448, self.scene_width, self.scene_height - 448)]
+        self.terrain_rect = terrain_rect
         # define gravity
-        self.g_accel = 10
-        # define if screen should be scaled
-        self.scale_screen = True
-
-    def load(self, screen, main_player):
-        main_player.event_active = False
-        main_player.events_waiting = []
-        if self.event_on_load:
-            main_player.add_event_queue(screen, self, main_player, self.event_on_load)
-            main_player.update_event_system(screen, self, main_player)
-        if self.bgm_name:
-            if pygame.mixer.Channel(SoundConstants.BGM_CHANNEL).get_busy():
-                pygame.mixer.Channel(SoundConstants.BGM_CHANNEL).stop()
-            pygame.mixer.Channel(SoundConstants.BGM_CHANNEL).play(assets.get_asset(self.bgm_name))
-
-    def update_map(self, screen):
-        screen.blit(self.background_image, (0, 0))
-
-    def update_upper_layer(self, screen):
-        screen.blit(self.upper_layer_image, (0, 0))
-
+        self.g_accel = g_accel
+        
     def update_physics_one(self, screen, main_player, dt, character):
         pass
 

@@ -20,18 +20,11 @@ class BaseScene(Scene):
     """Base scene only used in testing"""
 
     def __init__(self, start_tile_x=13, start_tile_y=10):
-        super().__init__(start_tile_x, start_tile_y)
-        self.background_image = assets.get_asset("textures/map/basic_background_with_houses.png")
-        self.upper_layer_image = assets.get_asset("textures/upper_layer/basic_tree_upper_layer.png")
-        self.npcs = [
-            NPC(32, 10, SpriteSheet_Constants.FACING_LEFT, 'textures/spritesheets/demo2.png',
-                [DialogueEvent('뭘 봐?')])]
-        self.event_tiles = defaultdict(list)
-        # self.event_tiles[(10,1)] = [DialogueEvent('그런데, 그것이 과연 완벽한 진실이라고 장담할 수 있을까? 나는 그렇다고 생각하지 않아.',),DialogueEvent(',,,,,,,,,,,,,,이건빠르고저건느리네요..','textures/characters/test.png',),BasicFunctionEvent(self.function_04),DelayEvent(5),DialogueEvent('일어나세요 용사님!!',),BasicFunctionEvent(self.function_05)]
-        # self.event_tiles[(11,1)] = [BasicFunctionEvent(self.function_01),]
-        # self.event_tiles[(11,2)] = [BasicFunctionEvent(self.function_02),]
-        # self.event_tiles[(11,3)] = [BasicFunctionEvent(self.function_03),]
-        # self.event_tiles[(11,4)] = [SceneChangeEvent(Scene()),]
+        super().__init__(32, 18, start_tile_x, start_tile_y, "textures/map/basic_background_with_houses.png",
+                         "textures/upper_layer/basic_tree_upper_layer.png", None, True,
+                         True, True, [], [
+                             NPC(32, 10, SpriteSheet_Constants.FACING_LEFT, 'textures/spritesheets/demo2.png',
+                                 [DialogueEvent('뭘 봐?')])])
         self.movable_tiles = [
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],

@@ -4,36 +4,29 @@ import pygame
 import src.constants.sound_constants as SoundConstants
 import src.constants.tilemap_constants as TileMap_Constants
 from src.base.assets import assets
+from src.base.space import Space
 
 
-class Scene:
+class Scene(Space):
     """basic scene class"""
 
-    def __init__(self, start_tile_x=16, start_tile_y=9):
-        # bgm
-        self.bgm_name = None
-        # fade settings
-        self.will_fade_in = True
-        self.will_fade_out = True
-        self.fade_percent = 0
-        self.fading = ""
-        self.has_been_shown = False
-        # set scene size
-        self.scene_tiles_x = 32
-        self.scene_tiles_y = 18
-        self.scene_width = self.scene_tiles_x * TileMap_Constants.TILE_SIZE
-        self.scene_height = self.scene_tiles_y * TileMap_Constants.TILE_SIZE
-        # load background and upper_layer image
-        self.background_image = assets.get_asset("textures/map/white.png")
-        self.upper_layer_image = assets.get_asset("textures/map/white.png")
+    def __init__(self, scene_tiles_x=32, scene_tiles_y=18, start_tile_x=16, start_tile_y=9,
+                 background_image="textures/map/white.png",
+                 upper_layer_image="textures/upper_layer/transparent.png", bgm="", will_fade_in=True,
+                 will_fade_out=True, scale_screen=True, events_on_load=[], npcs=[]):
+        super().__init__(scene_tiles_x * TileMap_Constants.TILE_SIZE, scene_tiles_y * TileMap_Constants.TILE_SIZE,
+                         start_tile_x * TileMap_Constants.TILE_SIZE, start_tile_y * TileMap_Constants.TILE_SIZE,
+                         background_image, upper_layer_image, bgm, will_fade_in, will_fade_out, scale_screen,
+                         events_on_load)
+        self.scene_tiles_x = scene_tiles_x
+        self.scene_tiles_y = scene_tiles_y
         # set start tile
         self.start_tile_x = start_tile_x
         self.start_tile_y = start_tile_y
         # initialize event and scene_chagnge tiles
         self.event_tiles = defaultdict(list)
-        self.event_on_load = []
         # npcs
-        self.npcs = []
+        self.npcs = npcs
         # define what tiles are steppable
         self.movable_tiles = [
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -54,25 +47,3 @@ class Scene:
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
-        # define if screen should be scaled
-        self.scale_screen = True
-
-    def load(self, screen, main_player):
-        """function called when scene is loaded"""
-        main_player.event_active = False
-        main_player.events_waiting = []
-        if self.event_on_load:
-            main_player.add_event_queue(screen, self, main_player, self.event_on_load)
-            main_player.update_event_system(screen, self, main_player)
-        if self.bgm_name:
-            if pygame.mixer.Channel(SoundConstants.BGM_CHANNEL).get_busy():
-                pygame.mixer.Channel(SoundConstants.BGM_CHANNEL).stop()
-            pygame.mixer.Channel(SoundConstants.BGM_CHANNEL).play(assets.get_asset(self.bgm_name))
-
-    def update_map(self, screen):
-        """update map(background) every frame"""
-        screen.blit(self.background_image, (0, 0))
-
-    def update_upper_layer(self, screen):
-        """update upper layer every frame"""
-        screen.blit(self.upper_layer_image, (0, 0))
