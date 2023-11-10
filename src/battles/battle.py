@@ -12,7 +12,8 @@ from src.extra.functions import same_with_errors
 class Battle(Space):
     def __init__(self, width=1024, height=576, start_x=512, start_y=288, background_image="textures/map/white.png",
                  upper_layer_image="textures/upper_layer/transparent.png", bgm="", will_fade_in=True,
-                 will_fade_out=True, scale_screen=True, events_on_load=[], events_on_boss_health=defaultdict(float),
+                 will_fade_out=True, scale_screen=True, can_save=True, events_on_load=[],
+                 events_on_boss_health=defaultdict(float),
                  event_on_clear=[], boss=None, enemies=[], terrain_rect=[], g_accel=10):
         super().__init__(width, height, start_x, start_y, background_image, upper_layer_image, bgm, will_fade_in,
                          will_fade_out, scale_screen, events_on_load)
@@ -26,7 +27,7 @@ class Battle(Space):
         self.terrain_rect = terrain_rect
         # define gravity
         self.g_accel = g_accel
-        
+
     def update_physics_one(self, screen, main_player, dt, character):
         pass
 

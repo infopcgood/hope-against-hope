@@ -18,7 +18,7 @@ class StartScene(Scene):
     def __init__(self, start_tile_x=16, start_tile_y=9):  # warning ignored because everything has to be redefined
         super().__init__(32, 18, start_tile_x, start_tile_y, "textures/map/test_title_screen.png",
                          "textures/upper_layer/transparent.png", 'sounds/bgm/8 Bit Adventure - David Renda.mp3', False,
-                         True, False, [], [])
+                         True, False, True, [], [])
         self.movable_tiles = [
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],

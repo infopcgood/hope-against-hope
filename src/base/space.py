@@ -7,7 +7,7 @@ import src.constants.sound_constants as SoundConstants
 class Space:
     def __init__(self, width=1024, height=576, start_x=512, start_y=288, background_image="textures/map/white.png",
                  upper_layer_image="textures/upper_layer/transparent.png", bgm="", will_fade_in=True,
-                 will_fade_out=True, scale_screen=True, events_on_load=[]):
+                 will_fade_out=True, scale_screen=True, can_save=True, events_on_load=[]):
         # bgm
         self.bgm_name = bgm if bgm else None
         # fade settings
@@ -29,6 +29,8 @@ class Space:
         self.event_on_load = events_on_load
         # define if screen should be scaled
         self.scale_screen = scale_screen
+        # define if game can be saved in this space
+        self.can_save = can_save
 
     def load(self, screen, main_player):
         """function called when scene is loaded"""
