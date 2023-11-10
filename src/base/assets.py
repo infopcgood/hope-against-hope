@@ -1,3 +1,4 @@
+import json
 from collections import defaultdict
 
 import pygame.mixer
@@ -21,6 +22,10 @@ class Assets:
             self.assets[asset_key] = pygame.image.load(asset_path).convert_alpha()
         elif asset_path[-4:] in Asset_Constants.FONT_ASSET_FILENAME_EXTENSION:
             self.assets[asset_key] = pygame.font.Font(asset_path, args[0])
+        elif asset_path[-4:] in Asset_Constants.I18N_ASSET_FILENAME_EXTENSION:
+            i18n_file = open(asset_path, 'r')
+            self.assets[asset_key] = json.load(i18n_file)
+            i18n_file.close()
         else:
             raise NotImplementedError
 
