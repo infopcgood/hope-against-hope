@@ -10,6 +10,7 @@ from src.characters.player import Player
 import src.constants.spritesheet_constants as SpriteSheet_Constants
 import src.constants.effect_constants as EffectConstants
 from src.extra.functions import same_with_errors
+from src.gui.option import Option
 from src.gui.testing_gui import TestingGUI
 from src.scenes.start_scene import StartScene
 import src.constants.gui_constants as GUIConstants
@@ -35,8 +36,10 @@ pygame.display.set_caption("Game")
 for mixer_id in range(8):
     pygame.mixer.Channel(mixer_id).set_volume(preferences.get_preference('volume'))
 clock = pygame.time.Clock()
+options_menu = Option()
 running = True
 initialized = False
+paused = False
 frame_index = 0
 
 # load assets
@@ -67,62 +70,86 @@ while running:
     # fill screen black
     scaled_cropped_screen.fill("black")
 
-    # check for quit & dialogue interrupt event
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-            break
-        # continue dialogue
-        if main_player.event_active and event.type == pygame.KEYDOWN and main_player.event_active.update_on_key:
-            main_player.update_event_system(screen, scene, main_player)
-        # check for any interactions
-        if not main_player.event_active and not main_player.events_waiting and event.type == pygame.KEYDOWN and event.key == pygame.K_x:
-            for npc in scene.npcs:
-                if (npc.tile_x, npc.tile_y) == (main_player.tile_x + TileMap_Constants.MOVEMENT_X[main_player.facing],
-                                                main_player.tile_y + TileMap_Constants.MOVEMENT_Y[main_player.facing]):
-                    main_player.add_event_queue(screen, scene, main_player, npc.events_on_interaction)
-                    main_player.update_event_system(screen, scene, main_player)
-    if not running:
-        break
-    if main_player.event_active and not main_player.event_active.update_on_key:
-        main_player.update_event_system(screen, scene, main_player)
-
-    # check for delay
-    if main_player.event_active and isinstance(main_player.event_active, DelayEvent):
-        delaying = True
+    if paused:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+                break
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    paused = False
+                    break
+                if event.key == pygame.K_UP:
+                    if options_menu.selection_level == 0:
+                        options_menu.change_selected_tab(scene, -1)
+                if event.key == pygame.K_DOWN:
+                    if options_menu.selection_level == 0:
+                        options_menu.change_selected_tab(scene, 1)
+                if event.key == pygame.K_RETURN:
+                    if options_menu.selection_level == 0:
+                        pass
     else:
-        delaying = False
+        # check for quit & dialogue interrupt event
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+                break
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE and not main_player.scene_needs_to_be_changed:
+                    paused = True
+                    break
+            # continue dialogue
+            if main_player.event_active and event.type == pygame.KEYDOWN and main_player.event_active.update_on_key:
+                main_player.update_event_system(screen, scene, main_player)
+            # check for any interactions
+            if not main_player.event_active and not main_player.events_waiting and event.type == pygame.KEYDOWN and event.key == pygame.K_x:
+                for npc in scene.npcs:
+                    if (npc.tile_x, npc.tile_y) == (
+                            main_player.tile_x + TileMap_Constants.MOVEMENT_X[main_player.facing],
+                            main_player.tile_y + TileMap_Constants.MOVEMENT_Y[main_player.facing]):
+                        main_player.add_event_queue(screen, scene, main_player, npc.events_on_interaction)
+                        main_player.update_event_system(screen, scene, main_player)
+        if not running:
+            break
+        if main_player.event_active and not main_player.event_active.update_on_key:
+            main_player.update_event_system(screen, scene, main_player)
 
-    # check for keypress
-    if not delaying:
-        keys_pressed = pygame.key.get_pressed()
-        if not main_player.event_active and not main_player.is_moving and not main_player.events_waiting:  # process movement
-            if keys_pressed[pygame.K_w] or keys_pressed[pygame.K_UP]:
-                main_player.move_one_tile(SpriteSheet_Constants.FACING_UP, screen, scene, main_player)
-            elif keys_pressed[pygame.K_a] or keys_pressed[pygame.K_LEFT]:
-                main_player.move_one_tile(SpriteSheet_Constants.FACING_LEFT, screen, scene, main_player)
-            elif keys_pressed[pygame.K_s] or keys_pressed[pygame.K_DOWN]:
-                main_player.move_one_tile(SpriteSheet_Constants.FACING_DOWN, screen, scene, main_player)
-            elif keys_pressed[pygame.K_d] or keys_pressed[pygame.K_RIGHT]:
-                main_player.move_one_tile(SpriteSheet_Constants.FACING_RIGHT, screen, scene, main_player)
-    # check if scene needs to be updated
-    skip_scene_load_flag = False
-    if (main_player.scene_needs_to_be_changed and scene.fading not in ["in", "out"]) or not initialized:
-        if main_player.scene_needs_to_be_changed and not skip_scene_load_flag:
-            if scene.fade_percent and scene.has_been_shown:
-                scene.fading = "out"
-                skip_scene_load_flag = True
-            else:
-                if initialized:
-                    scene = main_player.scene_waiting
-                screen = pygame.Surface((scene.scene_width, scene.scene_height))
-                scene.fading = "in"
-                scene.has_been_shown = True
-        if not skip_scene_load_flag:
-            scene.load(screen, main_player)
-            main_player.force_instant_move(scene.start_tile_x, scene.start_tile_y)
-            main_player.scene_needs_to_be_changed = False
-            initialized = True
+        # check for delay
+        if main_player.event_active and isinstance(main_player.event_active, DelayEvent):
+            delaying = True
+        else:
+            delaying = False
+
+        # check for keypress
+        if not delaying:
+            keys_pressed = pygame.key.get_pressed()
+            if not main_player.event_active and not main_player.is_moving and not main_player.events_waiting:  # process movement
+                if keys_pressed[pygame.K_w] or keys_pressed[pygame.K_UP]:
+                    main_player.move_one_tile(SpriteSheet_Constants.FACING_UP, screen, scene, main_player)
+                elif keys_pressed[pygame.K_a] or keys_pressed[pygame.K_LEFT]:
+                    main_player.move_one_tile(SpriteSheet_Constants.FACING_LEFT, screen, scene, main_player)
+                elif keys_pressed[pygame.K_s] or keys_pressed[pygame.K_DOWN]:
+                    main_player.move_one_tile(SpriteSheet_Constants.FACING_DOWN, screen, scene, main_player)
+                elif keys_pressed[pygame.K_d] or keys_pressed[pygame.K_RIGHT]:
+                    main_player.move_one_tile(SpriteSheet_Constants.FACING_RIGHT, screen, scene, main_player)
+        # check if scene needs to be updated
+        skip_scene_load_flag = False
+        if (main_player.scene_needs_to_be_changed and scene.fading not in ["in", "out"]) or not initialized:
+            if main_player.scene_needs_to_be_changed and not skip_scene_load_flag:
+                if scene.fade_percent and scene.has_been_shown:
+                    scene.fading = "out"
+                    skip_scene_load_flag = True
+                else:
+                    if initialized:
+                        scene = main_player.scene_waiting
+                    screen = pygame.Surface((scene.scene_width, scene.scene_height))
+                    scene.fading = "in"
+                    scene.has_been_shown = True
+            if not skip_scene_load_flag:
+                scene.load(screen, main_player)
+                main_player.force_instant_move(scene.start_tile_x, scene.start_tile_y)
+                main_player.scene_needs_to_be_changed = False
+                initialized = True
     # update screen in order of scene(map) -> NPCs -> player -> upper layer -> GUI (DialogueEvent) -> pygame.display
     # scene(map)
     scene.update_map(screen)
@@ -130,7 +157,7 @@ while running:
     for npc in scene.npcs:
         npc.update(screen, scene, main_player, delta_time)
     # player
-    main_player.update(screen, scene, main_player, delta_time)
+    main_player.update(screen, scene, main_player, delta_time, not paused)
     # upper_layer
     scene.update_upper_layer(screen)
 
@@ -188,9 +215,11 @@ while running:
         scaled_cropped_screen.blit(screen, (0, 0))
 
     # GUI
-    if main_player.event_active and main_player.event_active.needs_to_be_updated:
-        main_player.event_active.object.update(scaled_cropped_screen)
-    test_gui.update(scaled_cropped_screen, main_player, scene.movable_tiles, clock.get_fps())
+    if paused:
+        options_menu.update(scaled_cropped_screen, scene, main_player)
+    else:
+        if main_player.event_active and main_player.event_active.needs_to_be_updated:
+            main_player.event_active.object.update(scaled_cropped_screen)
     # post processing after gui
     dest = (0, 0)
     if main_player.shake_screen:

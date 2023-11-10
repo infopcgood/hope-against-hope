@@ -13,8 +13,8 @@ class Preferences:
             preferences_file = open(Preference_Constants.PREFERENCES_FILENAME, "r")
             preferences_json = json.load(preferences_file)
             preferences_file.close()
-            for key in preferences_json.keys():
-                if key in Preference_Constants.PREFERENCES_KEYS_AND_TYPES.keys():
+            for key in Preference_Constants.PREFERENCES_KEYS_AND_TYPES.keys():
+                if key in preferences_json.keys():
                     try:
                         self.preferences_dict[key] = Preference_Constants.PREFERENCES_KEYS_AND_TYPES[key](
                             preferences_json[key])

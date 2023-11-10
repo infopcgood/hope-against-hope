@@ -149,18 +149,18 @@ class Character(pygame.sprite.Sprite):
         self.vx = 0
         self.vy = 0
 
-    def update(self, screen, scene, main_player, dt, externally_controlled_movement=False):
+    def update(self, screen, scene, main_player, dt, update_movements=True):
         """update function called every frame"""
         # move or stop character depending on position
-        if self.is_moving:
+        if update_movements and self.is_moving:
             self.move(screen, scene, main_player, dt)
-        if self.is_moving and same_with_errors(self.x, self.tile_x * TileMap_Constants.TILE_SIZE) and same_with_errors(
-                self.y, self.tile_y * TileMap_Constants.TILE_SIZE):
-            self.stop(screen, scene, main_player)
+            if same_with_errors(self.x, self.tile_x * TileMap_Constants.TILE_SIZE) and same_with_errors(
+                    self.y, self.tile_y * TileMap_Constants.TILE_SIZE):
+                self.stop(screen, scene, main_player)
         # continue animation
-        if self.playing_anim:
+        if update_movements and self.playing_anim:
             self.update_anim(screen, scene, main_player)
-        if self.emote is not None:
+        if update_movements and self.emote is not None:
             self.update_emote(screen, scene, main_player)
         self.corner_x = self.x - 3 * 64 // 4
         self.corner_y = self.y - 64 // 2

@@ -1,8 +1,9 @@
 from src.base.assets import assets
 import src.constants.i18n_constants as I18N_Constants
+from src.base.preferences import preferences
 
 
-class i18n:
+class I18N:
     def __init__(self, lang='en_US'):
         self.lang = lang
         self.lang_json = assets.get_asset(I18N_Constants.I18N_DIRECTORY + self.lang + '.json')
@@ -25,3 +26,6 @@ class i18n:
                 raise NotImplementedError
         else:
             raise NotImplementedError
+
+
+i18n = I18N(preferences.get_preference('lang'))
