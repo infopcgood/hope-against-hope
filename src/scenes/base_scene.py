@@ -46,7 +46,6 @@ class BaseScene(Scene):
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
 
     def load(self, screen, main_player):
-        super().load(screen, main_player)
         self.event_tiles[(10, 1)] = [(SceneChangeEvent(start_scene.StartScene(32, 10)),
                                       "main_player.facing == SpriteSheet_Constants.FACING_LEFT")]
         self.event_tiles[(8, 1)] = [(SceneChangeEvent(start_scene.StartScene(32, 8)),
@@ -68,6 +67,7 @@ class BaseScene(Scene):
                                      "main_player.facing == SpriteSheet_Constants.FACING_LEFT")]
         self.event_tiles[(9, 2)] = [(SceneChangeEvent(start_scene.StartScene(32, 9)),
                                      "main_player.facing == SpriteSheet_Constants.FACING_LEFT")]
+        super().load(screen, main_player)
 
     def npc01_move(self, screen, scene, main_player):
         """npc01 move"""
