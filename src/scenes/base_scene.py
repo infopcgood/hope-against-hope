@@ -22,7 +22,7 @@ class BaseScene(Scene):
     def __init__(self, start_tile_x=13, start_tile_y=10):
         super().__init__(32, 18, start_tile_x, start_tile_y, "textures/map/basic_background_with_houses.png",
                          "textures/upper_layer/basic_tree_upper_layer.png", None, True,
-                         True, True, False, [], [
+                         True, True, False, None, [
                              NPC(32, 10, SpriteSheet_Constants.FACING_LEFT, 'textures/spritesheets/demo2.png',
                                  [DialogueEvent('뭘 봐?')])])
         self.movable_tiles = [
