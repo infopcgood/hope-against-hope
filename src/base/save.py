@@ -42,6 +42,7 @@ class Save:
         scene.upper_layer_image = None
         if isinstance(scene, Scene):
             scene.npcs = [self.make_character_pickleable(npc) for npc in scene.npcs] if scene.npcs else []
+        print(scene.__dict__)
         pickled_scene = deepcopy(scene)
         scene.background_image = assets.get_asset(scene.background_image_filename)
         scene.upper_layer_image = assets.get_asset(scene.upper_layer_image_filename)

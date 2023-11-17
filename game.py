@@ -119,7 +119,8 @@ while running:
                 running = False
                 break
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE and not main_player.scene_needs_to_be_changed:
+                if (event.key == pygame.K_ESCAPE and not main_player.scene_needs_to_be_changed and not scene.fading and
+                        not main_player.is_moving and not main_player.event_active and not main_player.events_waiting):
                     paused = True
                     break
             # continue dialogue
@@ -193,9 +194,11 @@ while running:
             if same_with_errors(scene.fade_percent, 100):
                 scene.fading = ""
                 scene.fade_percent = 100
+                main_player.scene_waiting = None
         else:
             scene.fading = ""
             scene.fade_percent = 100
+            main_player.scene_waiting = None
     elif scene.fading == "out":
         if scene.will_fade_out:
             scene.fade_percent -= EffectConstants.FADE_SPEED
