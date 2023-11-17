@@ -13,6 +13,7 @@ import src.constants.effect_constants as EffectConstants
 from src.extra.functions import same_with_errors
 from src.gui.option import Option
 from src.gui.testing_gui import TestingGUI
+from src.scenes.scene import Scene
 from src.scenes.start_scene import StartScene
 import src.constants.gui_constants as GUIConstants
 import src.constants.sound_constants as SoundConstants
@@ -66,7 +67,9 @@ main_player = None
 scaled_cropped_screen = pygame.Surface((Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT), pygame.SRCALPHA)
 try:
     scene, main_player = save.load_data_from_file('save_01.gsvf')
-except:
+    initialized = True
+except Exception as e:
+    print(e)
     scene = StartScene()
     main_player = Player()
     save.save_data_to_file('save_01.gsvf', scene, main_player)
@@ -175,8 +178,9 @@ while running:
     # scene(map)
     scene.update_map(screen)
     # NPCs
-    for npc in scene.npcs:
-        npc.update(screen, scene, main_player, delta_time)
+    if isinstance(scene, Scene):
+        for npc in scene.npcs:
+            npc.update(screen, scene, main_player, delta_time)
     # player
     main_player.update(screen, scene, main_player, delta_time, not paused)
     # upper_layer

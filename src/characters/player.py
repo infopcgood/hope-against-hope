@@ -36,28 +36,28 @@ class Player(Character):
         """activate next event"""
         if not self.events_waiting:
             return
-        if isinstance(self.events_waiting[0], tuple):
+        if isinstance(self.events_waiting[0][0], tuple):
             if not eval(self.events_waiting[0][1]):
                 self.events_waiting = self.events_waiting[1:]
                 if self.events_waiting:
                     self.activate_next_event(screen, scene, main_player)
                 return
             self.events_waiting[0] = self.events_waiting[0][0]
-        self.event_active = self.events_waiting[0]
+        self.event_active = self.events_waiting[0][0](*self.events_waiting[0][1:])
         self.events_waiting = self.events_waiting[1:]
         self.event_needs_to_be_initialized = True
 
     def add_event_queue(self, screen, scene, main_player, events=[]):
-        self.events_waiting = [event for event in self.events_waiting if not isinstance(event, VoidEvent)]
+        self.events_waiting = [event for event in self.events_waiting if not isinstance(event[0], VoidEvent)]
         events_unprocessed = events[:]
         """add events to event queue"""
         for event in events_unprocessed:
-            if isinstance(event, tuple) and not eval(event[1]):
+            if isinstance(event[0], tuple) and not eval(event[1]):
                 events_unprocessed.remove(event)
             else:
                 break
         events_stripped = events_unprocessed[:]
-        self.events_waiting += events_stripped + [VoidEvent()] if events_stripped else []
+        self.events_waiting += events_stripped + [(VoidEvent,)] if events_stripped else []
 
     def update_event_system(self, screen, scene, main_player):
         """update active & waiting dialogues"""

@@ -40,12 +40,12 @@ class StartScene(Scene):
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
 
     def add_event_system(self, screen, main_player):
-        self.event_tiles[(10, 1)] = [BasicFunctionEvent(quit_game)]
+        self.event_tiles[(10, 1)] = [(BasicFunctionEvent, quit_game)]
         self.event_tiles[(10, 32)] = [
-            (SceneChangeEvent(BaseScene(1, 10)), "main_player.facing == SpriteSheet_Constants.FACING_RIGHT")]
-        self.event_tiles[(8, 1)] = [BasicFunctionEvent(quit_game)]
+            ((SceneChangeEvent, BaseScene, (1, 10)), "main_player.facing == SpriteSheet_Constants.FACING_RIGHT")]
+        self.event_tiles[(8, 1)] = [(BasicFunctionEvent, quit_game)]
         self.event_tiles[(8, 32)] = [
-            (SceneChangeEvent(BaseScene(1, 8)), "main_player.facing == SpriteSheet_Constants.FACING_RIGHT")]
-        self.event_tiles[(9, 1)] = [BasicFunctionEvent(quit_game)]
+            ((SceneChangeEvent, BaseScene, (1, 8)), "main_player.facing == SpriteSheet_Constants.FACING_RIGHT")]
+        self.event_tiles[(9, 1)] = [(BasicFunctionEvent, quit_game)]
         self.event_tiles[(9, 32)] = [
-            (SceneChangeEvent(BaseScene(1, 9)), "main_player.facing == SpriteSheet_Constants.FACING_RIGHT")]
+            ((SceneChangeEvent, BaseScene, (1, 9)), "main_player.facing == SpriteSheet_Constants.FACING_RIGHT")]

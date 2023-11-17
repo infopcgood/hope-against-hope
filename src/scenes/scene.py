@@ -23,7 +23,7 @@ class Scene(Space):
         # set start tile
         self.start_tile_x = start_tile_x
         self.start_tile_y = start_tile_y
-        # initialize event and scene_chagnge tiles
+        # initialize event and scene_change tiles
         self.event_tiles = defaultdict(list)
         # npcs
         self.npcs = npcs if npcs else []
