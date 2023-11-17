@@ -7,7 +7,7 @@ import src.constants.tilemap_constants as TileMap_Constants
 from src.extra.functions import same_with_errors
 
 
-class Character(pygame.sprite.Sprite):
+class Character:
     """basic character class"""
 
     def __init__(self, tile_x=16, tile_y=9, facing=SpriteSheet_Constants.FACING_RIGHT,

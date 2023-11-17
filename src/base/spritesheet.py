@@ -10,6 +10,7 @@ class SpriteSheet:
     def __init__(self, filename, sprite_size=(64, 64)):
         # load spritesheet
         self.spritesheet = assets.get_asset(filename)
+        self.filename = filename
         self.sprite_size = sprite_size
 
     def image_at_rect(self, rectangle):

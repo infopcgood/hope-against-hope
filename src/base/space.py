@@ -20,7 +20,9 @@ class Space:
         self.scene_width = width
         self.scene_height = height
         # load background and upper_layer image
+        self.background_image_filename = background_image
         self.background_image = assets.get_asset(background_image)
+        self.upper_layer_image_filename = upper_layer_image
         self.upper_layer_image = assets.get_asset(upper_layer_image)
         # set start pos
         self.start_x = start_x
@@ -43,6 +45,7 @@ class Space:
             if pygame.mixer.Channel(SoundConstants.BGM_CHANNEL).get_busy():
                 pygame.mixer.Channel(SoundConstants.BGM_CHANNEL).stop()
             pygame.mixer.Channel(SoundConstants.BGM_CHANNEL).play(assets.get_asset(self.bgm_name))
+        self.add_event_system(screen, main_player)
 
     def update_map(self, screen):
         """update map(background) every frame"""
@@ -51,3 +54,6 @@ class Space:
     def update_upper_layer(self, screen):
         """update upper layer every frame"""
         screen.blit(self.upper_layer_image, (0, 0))
+
+    def add_event_system(self, screen, main_player):
+        pass

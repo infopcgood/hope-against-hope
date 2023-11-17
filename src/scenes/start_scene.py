@@ -39,8 +39,7 @@ class StartScene(Scene):
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
 
-    def load(self, screen, main_player):
-        super().load(screen, main_player)
+    def add_event_system(self, screen, main_player):
         self.event_tiles[(10, 1)] = [BasicFunctionEvent(quit_game)]
         self.event_tiles[(10, 32)] = [
             (SceneChangeEvent(BaseScene(1, 10)), "main_player.facing == SpriteSheet_Constants.FACING_RIGHT")]

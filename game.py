@@ -6,6 +6,7 @@ import random
 import os
 import src.constants.base_constants as Constants
 from src.base.assets import assets
+from src.base.save import Save
 from src.characters.player import Player
 import src.constants.spritesheet_constants as SpriteSheet_Constants
 import src.constants.effect_constants as EffectConstants
@@ -19,6 +20,7 @@ import src.constants.tilemap_constants as TileMap_Constants
 import src.constants.asset_constants as Asset_Constants
 from src.events.delay_event import DelayEvent
 from src.base.preferences import preferences
+from src.base.save import save
 
 
 def limit_bounds(x, lower, upper):
@@ -30,7 +32,7 @@ def limit_bounds(x, lower, upper):
 # init and set global variables
 pygame.init()
 window = pygame.display.set_mode((Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT), pygame.DOUBLEBUF, 8)
-screen = pygame.Surface((Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT))
+screen = pygame.Surface((Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT), pygame.SRCALPHA)
 pygame.event.set_allowed([pygame.QUIT, pygame.KEYDOWN, pygame.KEYUP])
 pygame.display.set_caption("Game")
 for mixer_id in range(8):
@@ -56,12 +58,21 @@ for font_folder_name in Asset_Constants.FONT_FOLDERS:
                 assets.load_asset(os.path.join(os.path.relpath(dir_name), file_name), font_size)
 
 # set basic objects
-scene = StartScene()
+scene = None
 test_gui = TestingGUI()
-main_player = Player()
+main_player = None
 
 # screen for scaled screen
-scaled_cropped_screen = pygame.Surface((Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT))
+scaled_cropped_screen = pygame.Surface((Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT), pygame.SRCALPHA)
+try:
+    scene, main_player = save.load_data_from_file('save_01.gsvf')
+except:
+    scene = StartScene()
+    main_player = Player()
+    save.save_data_to_file('save_01.gsvf', scene, main_player)
+save.save_data_to_file('save_01.gsvf', scene, main_player)
+save.save_data_to_file('save_02.gsvf', scene, main_player)
+save.save_data_to_file('save_03.gsvf', scene, main_player)
 
 while running:
     # delay amount of FPS and get delta_time for correct speed
@@ -82,12 +93,22 @@ while running:
                 if event.key == pygame.K_UP:
                     if options_menu.selection_level == 0:
                         options_menu.change_selected_tab(scene, -1)
+                    elif options_menu.selection_level == 1:
+                        options_menu.change_selection(-1)
                 if event.key == pygame.K_DOWN:
                     if options_menu.selection_level == 0:
                         options_menu.change_selected_tab(scene, 1)
+                    elif options_menu.selection_level == 1:
+                        options_menu.change_selection(1)
                 if event.key == pygame.K_RETURN:
-                    if options_menu.selection_level == 0:
-                        pass
+                    if options_menu.selection_level == GUIConstants.OPTIONS_UI_TAB_DEPTH[options_menu.selected_tab] - 1:
+                        options_menu.trigger_event(screen, scene, main_player)
+                    else:
+                        options_menu.change_selection_level(1)
+                if event.key == pygame.K_LEFT:
+                    options_menu.change_selection_level(-1)
+                if event.key == pygame.K_RIGHT:
+                    options_menu.change_selection_level(1)
     else:
         # check for quit & dialogue interrupt event
         for event in pygame.event.get():
@@ -142,7 +163,7 @@ while running:
                 else:
                     if initialized:
                         scene = main_player.scene_waiting
-                    screen = pygame.Surface((scene.scene_width, scene.scene_height))
+                    screen = pygame.Surface((scene.scene_width, scene.scene_height), pygame.SRCALPHA)
                     scene.fading = "in"
                     scene.has_been_shown = True
             if not skip_scene_load_flag:
@@ -220,11 +241,13 @@ while running:
     else:
         if main_player.event_active and main_player.event_active.needs_to_be_updated:
             main_player.event_active.object.update(scaled_cropped_screen)
+
     # post processing after gui
     dest = (0, 0)
     if main_player.shake_screen:
         dest = (random.randint(-EffectConstants.SCREEN_SHAKE_AMOUNT, EffectConstants.SCREEN_SHAKE_AMOUNT),
                 random.randint(-EffectConstants.SCREEN_SHAKE_AMOUNT, EffectConstants.SCREEN_SHAKE_AMOUNT))
+    # test_gui.update(scaled_cropped_screen, main_player, scene.movable_tiles, clock.get_fps())
     window.blit(scaled_cropped_screen, dest)
     # update display
     pygame.display.update()

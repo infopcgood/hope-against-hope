@@ -2,5 +2,11 @@
   "status": "상태",
   "items": "아이템",
   "save": "저장",
-  "quit": "나가기"
+  "cannot_save": "저장할 수 없음",
+  "quit": "나가기",
+  "quit_confirmation_prompt": "정말 게임을 나가시겠습니까?",
+  "yes": "네",
+  "no": "아니요",
+  "save_file_preposition": "세이브 파일 ",
+  "saved": "저장됨"
 }
