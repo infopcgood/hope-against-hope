@@ -1,5 +1,5 @@
 """Player method containing Player class"""
-
+from src.battles.battle import Battle
 from src.characters.character import Character
 from src.events.void_event import VoidEvent
 from src.gui.dialogue import Dialogue
@@ -30,7 +30,8 @@ class Player(Character):
     # when stopping, check if tile has designated dialogue
     def stop(self, screen, scene, main_player):
         super().stop(screen, scene, main_player)
-        self.update_event_system(screen, scene, main_player)
+        if not isinstance(scene, Battle):
+            self.update_event_system(screen, scene, main_player)
 
     def activate_next_event(self, screen, scene, main_player):
         """activate next event"""

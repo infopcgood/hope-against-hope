@@ -9,7 +9,6 @@ import base64
 
 from src.base.assets import assets
 from src.base.spritesheet import SpriteSheet
-from src.battles.battle import Battle
 from src.scenes.scene import Scene
 
 

@@ -45,6 +45,9 @@ class Character:
         # set hp
         self.max_hp = max_hp
         self.hp = self.max_hp
+        # 2d physics engine variables
+        self.on_ground = True
+        self.oncedowned = False
 
     def force_instant_move(self, tile_x, tile_y):
         """force instant movement"""
@@ -149,10 +152,10 @@ class Character:
         self.vx = 0
         self.vy = 0
 
-    def update(self, screen, scene, main_player, dt, update_movements=True):
+    def update(self, screen, scene, main_player, dt, update_movements=True, is_battle=False):
         """update function called every frame"""
         # move or stop character depending on position
-        if update_movements and self.is_moving:
+        if update_movements and (self.is_moving or is_battle):
             self.move(screen, scene, main_player, dt)
             if same_with_errors(self.x, self.tile_x * TileMap_Constants.TILE_SIZE) and same_with_errors(
                     self.y, self.tile_y * TileMap_Constants.TILE_SIZE):
@@ -173,3 +176,12 @@ class Character:
             emote_rect = (self.x - 32, self.y - 56)
             emote_image = self.emote_spritesheet.image_at_emote(self.emote, self.emote_index)
             screen.blit(emote_image, emote_rect)
+
+    def is_on_ground(self):
+        return self.on_ground
+
+    def update_pos_by_rect(self):
+        self.corner_x = self.rect.left
+        self.corner_y = self.rect.top
+        self.x = self.corner_x + 3 * 64 // 4
+        self.y = self.corner_y + 64 // 2

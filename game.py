@@ -7,6 +7,8 @@ import os
 import src.constants.base_constants as Constants
 from src.base.assets import assets
 from src.base.save import Save
+from src.battles.battle import Battle
+from src.battles.sample_battle import SampleBattle
 from src.characters.player import Player
 import src.constants.spritesheet_constants as SpriteSheet_Constants
 import src.constants.effect_constants as EffectConstants
@@ -70,12 +72,12 @@ try:
     initialized = True
 except Exception as e:
     print(e)
-    scene = StartScene()
+    scene = SampleBattle()
     main_player = Player()
-    save.save_data_to_file('save_01.gsvf', scene, main_player)
-save.save_data_to_file('save_01.gsvf', scene, main_player)
-save.save_data_to_file('save_02.gsvf', scene, main_player)
-save.save_data_to_file('save_03.gsvf', scene, main_player)
+    # save.save_data_to_file('save_01.gsvf', scene, main_player)
+# save.save_data_to_file('save_01.gsvf', scene, main_player)
+# save.save_data_to_file('save_02.gsvf', scene, main_player)
+# save.save_data_to_file('save_03.gsvf', scene, main_player)
 
 while running:
     # delay amount of FPS and get delta_time for correct speed
@@ -83,7 +85,7 @@ while running:
     frame_index += 1
     # fill screen black
     scaled_cropped_screen.fill("black")
-
+    # check if options menu is open
     if paused:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -148,15 +150,30 @@ while running:
         # check for keypress
         if not delaying:
             keys_pressed = pygame.key.get_pressed()
-            if not main_player.event_active and not main_player.is_moving and not main_player.events_waiting:  # process movement
-                if keys_pressed[pygame.K_w] or keys_pressed[pygame.K_UP]:
-                    main_player.move_one_tile(SpriteSheet_Constants.FACING_UP, screen, scene, main_player)
-                elif keys_pressed[pygame.K_a] or keys_pressed[pygame.K_LEFT]:
-                    main_player.move_one_tile(SpriteSheet_Constants.FACING_LEFT, screen, scene, main_player)
-                elif keys_pressed[pygame.K_s] or keys_pressed[pygame.K_DOWN]:
-                    main_player.move_one_tile(SpriteSheet_Constants.FACING_DOWN, screen, scene, main_player)
-                elif keys_pressed[pygame.K_d] or keys_pressed[pygame.K_RIGHT]:
-                    main_player.move_one_tile(SpriteSheet_Constants.FACING_RIGHT, screen, scene, main_player)
+            if isinstance(scene, Scene):
+                if not main_player.event_active and not main_player.is_moving and not main_player.events_waiting:  # process movement
+                    if keys_pressed[pygame.K_w] or keys_pressed[pygame.K_UP]:
+                        main_player.move_one_tile(SpriteSheet_Constants.FACING_UP, screen, scene, main_player)
+                    elif keys_pressed[pygame.K_a] or keys_pressed[pygame.K_LEFT]:
+                        main_player.move_one_tile(SpriteSheet_Constants.FACING_LEFT, screen, scene, main_player)
+                    elif keys_pressed[pygame.K_s] or keys_pressed[pygame.K_DOWN]:
+                        main_player.move_one_tile(SpriteSheet_Constants.FACING_DOWN, screen, scene, main_player)
+                    elif keys_pressed[pygame.K_d] or keys_pressed[pygame.K_RIGHT]:
+                        main_player.move_one_tile(SpriteSheet_Constants.FACING_RIGHT, screen, scene, main_player)
+            elif isinstance(scene, Battle):
+                if (keys_pressed[pygame.K_UP] or keys_pressed[pygame.K_SPACE]) and main_player.on_ground:
+                    main_player.vy = -0.35
+                    main_player.on_ground = False
+                    main_player.oncedowned = False
+                # if keys_pressed[pygame.K_DOWN] and not main_player.on_ground and not main_player.oncedowned:
+                #     main_player.vy =
+                #     main_player.oncedowned = True
+                if keys_pressed[pygame.K_LEFT] and not keys_pressed[pygame.K_RIGHT]:
+                    main_player.vx = -0.14
+                elif keys_pressed[pygame.K_RIGHT] and not keys_pressed[pygame.K_LEFT]:
+                    main_player.vx = 0.14
+                else:
+                    main_player.vx = 0
         # check if scene needs to be updated
         skip_scene_load_flag = False
         if (main_player.scene_needs_to_be_changed and scene.fading not in ["in", "out"]) or not initialized:
@@ -172,18 +189,24 @@ while running:
                     scene.has_been_shown = True
             if not skip_scene_load_flag:
                 scene.load(screen, main_player)
-                main_player.force_instant_move(scene.start_tile_x, scene.start_tile_y)
+                if not isinstance(scene, Battle):
+                    main_player.force_instant_move(scene.start_tile_x, scene.start_tile_y)
+                else:
+                    main_player.force_instant_move(scene.start_x / TileMap_Constants.TILE_SIZE,
+                                                   scene.start_y / TileMap_Constants.TILE_SIZE)
                 main_player.scene_needs_to_be_changed = False
                 initialized = True
     # update screen in order of scene(map) -> NPCs -> player -> upper layer -> GUI (DialogueEvent) -> pygame.display
     # scene(map)
     scene.update_map(screen)
+    if isinstance(scene, Battle) and not scene.fading:
+        scene.update_mechanics(screen, main_player, delta_time)
     # NPCs
     if isinstance(scene, Scene):
         for npc in scene.npcs:
             npc.update(screen, scene, main_player, delta_time)
     # player
-    main_player.update(screen, scene, main_player, delta_time, not paused)
+    main_player.update(screen, scene, main_player, delta_time, not paused, isinstance(scene, Battle))
     # upper_layer
     scene.update_upper_layer(screen)
 
@@ -254,7 +277,8 @@ while running:
     if main_player.shake_screen:
         dest = (random.randint(-EffectConstants.SCREEN_SHAKE_AMOUNT, EffectConstants.SCREEN_SHAKE_AMOUNT),
                 random.randint(-EffectConstants.SCREEN_SHAKE_AMOUNT, EffectConstants.SCREEN_SHAKE_AMOUNT))
-    # test_gui.update(scaled_cropped_screen, main_player, scene.movable_tiles, clock.get_fps())
+    test_gui.update(scaled_cropped_screen, main_player,
+                    clock.get_fps())
     window.blit(scaled_cropped_screen, dest)
     # update display
     pygame.display.update()
