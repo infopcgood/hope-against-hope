@@ -44,7 +44,8 @@ class Space:
         if self.bgm_name:
             if pygame.mixer.Channel(SoundConstants.BGM_CHANNEL).get_busy():
                 pygame.mixer.Channel(SoundConstants.BGM_CHANNEL).stop()
-            pygame.mixer.Channel(SoundConstants.BGM_CHANNEL).play(assets.get_asset(self.bgm_name))
+            pygame.mixer.Channel(SoundConstants.BGM_CHANNEL).set_volume(SoundConstants.BGM_VOLUME)
+            pygame.mixer.Channel(SoundConstants.BGM_CHANNEL).play(assets.get_asset(self.bgm_name), loops=32767)
         self.add_event_system(screen, main_player)
 
     def update_map(self, screen):

@@ -6,7 +6,9 @@ from src.base.assets import assets
 import src.constants.sound_constants as SoundConstants
 from src.base.space import Space
 from src.characters.enemy import Enemy
+from src.events.scene_change_event import SceneChangeEvent
 from src.extra.functions import same_with_errors
+from src.scenes.game_over_scene import GameOverScene
 
 
 class Battle(Space):
@@ -14,7 +16,7 @@ class Battle(Space):
                  upper_layer_image="textures/upper_layer/transparent.png", bgm="", will_fade_in=True,
                  will_fade_out=True, scale_screen=True, can_save=True, events_on_load=None,
                  events_on_boss_health=None,
-                 event_on_clear=None, boss=None, enemies=None, terrain_rect=None, g_accel=10):
+                 event_on_clear=None, boss=None, enemies=None, terrain_rect=None, g_accel=0.0017):
         super().__init__(width, height, start_x, start_y, background_image, upper_layer_image, bgm, will_fade_in,
                          will_fade_out, scale_screen, can_save, events_on_load)
         # set events on health (cur/full)
@@ -27,6 +29,15 @@ class Battle(Space):
         self.terrain_rect = terrain_rect if terrain_rect else []
         # define gravity
         self.g_accel = g_accel
+
+    def load(self, screen, main_player):
+        super().load(screen, main_player)
+        main_player.on_ground = False
+        main_player.is_moving = True
+        self.boss.on_ground = False
+        self.boss.is_moving = True
+        for enemy in self.enemies:
+            enemy.on_ground = False
 
     def update_physics_one(self, screen, main_player, dt, character):
         if character.rect.left <= 0:
@@ -80,3 +91,12 @@ class Battle(Space):
         self.update_physics(screen, main_player, dt)
         self.update_strategy(screen, main_player, dt)
         self.check_health_events(screen, main_player, dt)
+        if main_player.hp <= 0:
+            main_player.add_event_queue(screen, self, main_player, [(SceneChangeEvent, GameOverScene)])
+
+    def attack(self, screen, main_player, dt):
+        check_attack_list = [self.boss] + self.enemies
+        for enemy in check_attack_list:
+            if main_player.rect.colliderect(enemy.rect):
+                enemy.hp -= max(0, main_player.power)
+                enemy.attacked(screen, main_player, dt)

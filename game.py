@@ -1,5 +1,6 @@
 """Main game"""
 import gc
+from copy import copy
 
 import pygame
 import random
@@ -8,14 +9,21 @@ import src.constants.base_constants as Constants
 from src.base.assets import assets
 from src.base.save import Save
 from src.battles.battle import Battle
+from src.battles.battle_static import BattleStatic
 from src.battles.sample_battle import SampleBattle
 from src.characters.player import Player
 import src.constants.spritesheet_constants as SpriteSheet_Constants
 import src.constants.effect_constants as EffectConstants
 from src.extra.functions import same_with_errors
+from src.gui.battle_gui import BattleGUI
+from src.gui.load_ui import LoadUI
 from src.gui.option import Option
 from src.gui.testing_gui import TestingGUI
+from src.scenes.game_over_scene import GameOverScene
+from src.scenes.load_scene import LoadScene
 from src.scenes.scene import Scene
+from src.scenes.scene_01 import Scene01
+from src.scenes.scene_03 import Scene03
 from src.scenes.start_scene import StartScene
 import src.constants.gui_constants as GUIConstants
 import src.constants.sound_constants as SoundConstants
@@ -24,6 +32,7 @@ import src.constants.asset_constants as Asset_Constants
 from src.events.delay_event import DelayEvent
 from src.base.preferences import preferences
 from src.base.save import save
+from src.scenes.title_scene import TitleScene
 
 
 def limit_bounds(x, lower, upper):
@@ -44,7 +53,7 @@ clock = pygame.time.Clock()
 options_menu = Option()
 running = True
 initialized = False
-paused = False
+paused = True
 frame_index = 0
 
 # load assets
@@ -61,23 +70,20 @@ for font_folder_name in Asset_Constants.FONT_FOLDERS:
                 assets.load_asset(os.path.join(os.path.relpath(dir_name), file_name), font_size)
 
 # set basic objects
-scene = None
 test_gui = TestingGUI()
-main_player = None
+battle_gui = BattleGUI()
+load_menu = LoadUI()
 
 # screen for scaled screen
 scaled_cropped_screen = pygame.Surface((Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT), pygame.SRCALPHA)
-try:
-    scene, main_player = save.load_data_from_file('save_01.gsvf')
-    initialized = True
-except Exception as e:
-    print(e)
-    scene = SampleBattle()
-    main_player = Player()
-    # save.save_data_to_file('save_01.gsvf', scene, main_player)
-# save.save_data_to_file('save_01.gsvf', scene, main_player)
-# save.save_data_to_file('save_02.gsvf', scene, main_player)
-# save.save_data_to_file('save_03.gsvf', scene, main_player)
+scene = LoadScene()
+main_player = Player()
+
+save_loaded = False
+for idx in range(Constants.SAVE_COUNT):
+    if not save.validate_integrity(f'save_{idx+1:02}.gsvf'):
+        save.save_data_to_file(f'save_{idx+1:02}.gsvf', TitleScene(), main_player)
+        save.mark_as_new_file(f'save_{idx+1:02}.gsvf')
 
 while running:
     # delay amount of FPS and get delta_time for correct speed
@@ -87,33 +93,56 @@ while running:
     scaled_cropped_screen.fill("black")
     # check if options menu is open
     if paused:
+        if save.load_needed:
+            save.load_needed = False
+            print(save.load_data)
+            main_player = (save.load_data[1])
+            scene = save.load_data[0]
+            main_player.scene_waiting = (save.load_data[0])
+            paused = False
+            initialized = True
+            continue
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
                 break
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    paused = False
-                    break
-                if event.key == pygame.K_UP:
-                    if options_menu.selection_level == 0:
-                        options_menu.change_selected_tab(scene, -1)
-                    elif options_menu.selection_level == 1:
-                        options_menu.change_selection(-1)
-                if event.key == pygame.K_DOWN:
-                    if options_menu.selection_level == 0:
-                        options_menu.change_selected_tab(scene, 1)
-                    elif options_menu.selection_level == 1:
-                        options_menu.change_selection(1)
-                if event.key == pygame.K_RETURN:
-                    if options_menu.selection_level == GUIConstants.OPTIONS_UI_TAB_DEPTH[options_menu.selected_tab] - 1:
-                        options_menu.trigger_event(screen, scene, main_player)
-                    else:
+                if isinstance(scene, LoadScene):
+                    if event.key == pygame.K_ESCAPE:
+                        paused = False
+                        break
+                    if event.key == pygame.K_UP:
+                        if load_menu.selection_level == 1:
+                            load_menu.change_selection(-1)
+                    if event.key == pygame.K_DOWN:
+                        if load_menu.selection_level == 1:
+                            load_menu.change_selection(1)
+                    if event.key == pygame.K_RETURN:
+                        if load_menu.selection_level == GUIConstants.OPTIONS_UI_TAB_DEPTH[load_menu.selected_tab] - 1:
+                            load_menu.trigger_event(screen, scene, main_player)
+                else:
+                    if event.key == pygame.K_ESCAPE:
+                        paused = False
+                        break
+                    if event.key == pygame.K_UP:
+                        if options_menu.selection_level == 0:
+                            options_menu.change_selected_tab(scene, -1)
+                        elif options_menu.selection_level == 1:
+                            options_menu.change_selection(-1)
+                    if event.key == pygame.K_DOWN:
+                        if options_menu.selection_level == 0:
+                            options_menu.change_selected_tab(scene, 1)
+                        elif options_menu.selection_level == 1:
+                            options_menu.change_selection(1)
+                    if event.key == pygame.K_RETURN:
+                        if options_menu.selection_level == GUIConstants.OPTIONS_UI_TAB_DEPTH[options_menu.selected_tab] - 1:
+                            options_menu.trigger_event(screen, scene, main_player)
+                        else:
+                            options_menu.change_selection_level(1)
+                    if event.key == pygame.K_LEFT:
+                        options_menu.change_selection_level(-1)
+                    if event.key == pygame.K_RIGHT:
                         options_menu.change_selection_level(1)
-                if event.key == pygame.K_LEFT:
-                    options_menu.change_selection_level(-1)
-                if event.key == pygame.K_RIGHT:
-                    options_menu.change_selection_level(1)
     else:
         # check for quit & dialogue interrupt event
         for event in pygame.event.get():
@@ -130,12 +159,15 @@ while running:
                 main_player.update_event_system(screen, scene, main_player)
             # check for any interactions
             if not main_player.event_active and not main_player.events_waiting and event.type == pygame.KEYDOWN and event.key == pygame.K_x:
-                for npc in scene.npcs:
-                    if (npc.tile_x, npc.tile_y) == (
-                            main_player.tile_x + TileMap_Constants.MOVEMENT_X[main_player.facing],
-                            main_player.tile_y + TileMap_Constants.MOVEMENT_Y[main_player.facing]):
-                        main_player.add_event_queue(screen, scene, main_player, npc.events_on_interaction)
-                        main_player.update_event_system(screen, scene, main_player)
+                if isinstance(scene, Scene):
+                    for npc in scene.npcs:
+                        if (npc.tile_x, npc.tile_y) == (
+                                main_player.tile_x + TileMap_Constants.MOVEMENT_X[main_player.facing],
+                                main_player.tile_y + TileMap_Constants.MOVEMENT_Y[main_player.facing]):
+                            main_player.add_event_queue(screen, scene, main_player, npc.events_on_interaction)
+                            main_player.update_event_system(screen, scene, main_player)
+                elif isinstance(scene, Battle):
+                    scene.attack(screen, main_player, delta_time)
         if not running:
             break
         if main_player.event_active and not main_player.event_active.update_on_key:
@@ -162,18 +194,26 @@ while running:
                         main_player.move_one_tile(SpriteSheet_Constants.FACING_RIGHT, screen, scene, main_player)
             elif isinstance(scene, Battle):
                 if (keys_pressed[pygame.K_UP] or keys_pressed[pygame.K_SPACE]) and main_player.on_ground:
-                    main_player.vy = -0.35
+                    main_player.vy = -0.6
                     main_player.on_ground = False
                     main_player.oncedowned = False
                 # if keys_pressed[pygame.K_DOWN] and not main_player.on_ground and not main_player.oncedowned:
                 #     main_player.vy =
                 #     main_player.oncedowned = True
                 if keys_pressed[pygame.K_LEFT] and not keys_pressed[pygame.K_RIGHT]:
-                    main_player.vx = -0.14
+                    main_player.vx = -0.32
+                    main_player.anim = SpriteSheet_Constants.ACTION_WALKING
+                    main_player.facing = SpriteSheet_Constants.FACING_LEFT
+                    main_player.playing_anim = True
                 elif keys_pressed[pygame.K_RIGHT] and not keys_pressed[pygame.K_LEFT]:
-                    main_player.vx = 0.14
+                    main_player.vx = 0.32
+                    main_player.anim = SpriteSheet_Constants.ACTION_WALKING
+                    main_player.facing = SpriteSheet_Constants.FACING_RIGHT
+                    main_player.playing_anim = True
                 else:
                     main_player.vx = 0
+                    if main_player.on_ground:
+                        main_player.stop(screen, scene, main_player)
         # check if scene needs to be updated
         skip_scene_load_flag = False
         if (main_player.scene_needs_to_be_changed and scene.fading not in ["in", "out"]) or not initialized:
@@ -201,12 +241,21 @@ while running:
     scene.update_map(screen)
     if isinstance(scene, Battle) and not scene.fading:
         scene.update_mechanics(screen, main_player, delta_time)
-    # NPCs
+    # NPCs (behind player)
     if isinstance(scene, Scene):
         for npc in scene.npcs:
-            npc.update(screen, scene, main_player, delta_time)
+            if npc.tile_y < main_player.tile_y:
+                npc.update(screen, scene, main_player, delta_time)
+    # boss and projectiles
+    if isinstance(scene, Battle):
+        scene.boss.update(screen, scene, main_player, delta_time)
     # player
     main_player.update(screen, scene, main_player, delta_time, not paused, isinstance(scene, Battle))
+    # NPCs (above player)
+    if isinstance(scene, Scene):
+        for npc in scene.npcs:
+            if npc.tile_y >= main_player.tile_y:
+                npc.update(screen, scene, main_player, delta_time)
     # upper_layer
     scene.update_upper_layer(screen)
 
@@ -266,8 +315,13 @@ while running:
         scaled_cropped_screen.blit(screen, (0, 0))
 
     # GUI
+    if isinstance(scene, Battle):
+        battle_gui.update(scaled_cropped_screen, scene, main_player)
     if paused:
-        options_menu.update(scaled_cropped_screen, scene, main_player)
+        if isinstance(scene, LoadScene):
+            load_menu.update(scaled_cropped_screen, scene, main_player)
+        else:
+            options_menu.update(scaled_cropped_screen, scene, main_player)
     else:
         if main_player.event_active and main_player.event_active.needs_to_be_updated:
             main_player.event_active.object.update(scaled_cropped_screen)
@@ -277,8 +331,8 @@ while running:
     if main_player.shake_screen:
         dest = (random.randint(-EffectConstants.SCREEN_SHAKE_AMOUNT, EffectConstants.SCREEN_SHAKE_AMOUNT),
                 random.randint(-EffectConstants.SCREEN_SHAKE_AMOUNT, EffectConstants.SCREEN_SHAKE_AMOUNT))
-    test_gui.update(scaled_cropped_screen, main_player,
-                    clock.get_fps())
+    # test_gui.update(scaled_cropped_screen, main_player,
+    #                 clock.get_fps())
     window.blit(scaled_cropped_screen, dest)
     # update display
     pygame.display.update()

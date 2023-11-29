@@ -10,9 +10,7 @@ import src.scenes.start_scene as start_scene
 from src.events.scene_change_event import SceneChangeEvent
 import src.constants.spritesheet_constants as SpriteSheet_Constants
 from src.characters.character import Character
-from src.characters.player import Player
 from src.events.dialogue_event import DialogueEvent
-from src.events.wait_until_event import WaitUntilEvent
 from src.events.basic_function_event import BasicFunctionEvent
 
 

@@ -1,7 +1,7 @@
 """extra functions"""
 
 
-def same_with_errors(a, b, error=1):
+def same_with_errors(a, b, error=1.5):
     """hidden method for error correction"""
     return bool(abs(a - b) <= error)
 

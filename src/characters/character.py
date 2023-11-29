@@ -48,6 +48,9 @@ class Character:
         # 2d physics engine variables
         self.on_ground = True
         self.oncedowned = False
+        self.attack_blink_cnt = -1
+        self.attack_blink_idx = 0
+        self.power = 5
 
     def force_instant_move(self, tile_x, tile_y):
         """force instant movement"""
@@ -168,10 +171,20 @@ class Character:
         self.corner_x = self.x - 3 * 64 // 4
         self.corner_y = self.y - 64 // 2
         # draw character on screen
+        rect = (self.corner_x, self.corner_y, 64, 64)
         if self.visible:
-            rect = (self.corner_x, self.corner_y, 64, 64)
             image = self.spritesheet.image_at_anim(self.facing, self.anim, self.anim_index)
-            screen.blit(image, rect)
+            if self.attack_blink_cnt+1:
+                if self.attack_blink_cnt % 2 == 0:
+                    screen.blit(image, rect)
+                self.attack_blink_idx += 1
+                if self.attack_blink_idx >= 8:
+                    self.attack_blink_cnt += 1
+                    self.attack_blink_idx = 0
+                if self.attack_blink_cnt >= 7:
+                    self.attack_blink_cnt = -1
+            else:
+                screen.blit(image, rect)
         if self.emote is not None:
             emote_rect = (self.x - 32, self.y - 56)
             emote_image = self.emote_spritesheet.image_at_emote(self.emote, self.emote_index)
@@ -185,3 +198,6 @@ class Character:
         self.corner_y = self.rect.top
         self.x = self.corner_x + 3 * 64 // 4
         self.y = self.corner_y + 64 // 2
+
+    def attacked(self, screen, scene, delta_time):
+        self.attack_blink_cnt = 0

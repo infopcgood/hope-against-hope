@@ -9,3 +9,4 @@ END_DIALOGUE_SOUND_FILENAME = {"normal": 'sounds/dialogues/end/dialogue_normal.w
                                "light": 'sounds/dialogues/end/dialogue_light.wav',
                                "heavy": 'sounds/dialogues/end/dialogue_heavy.wav',
                                "silent": 'sounds/empty.wav'}
+BGM_VOLUME = 0.7

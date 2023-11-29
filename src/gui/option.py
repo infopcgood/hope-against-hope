@@ -44,8 +44,6 @@ class Option:
         match GUIConstants.OPTIONS_UI_TAB_IDS[self.selected_tab]:
             case 'status':
                 pass
-            case 'items':
-                pass
             case 'save':
                 save.save_data_to_file(f'save_{self.sub_selection + 1:02}.gsvf', scene, main_player)
                 self.last_saved_save_file_index = self.sub_selection
@@ -71,9 +69,13 @@ class Option:
     def draw_submenus(self, screen, scene, main_player):
         match GUIConstants.OPTIONS_UI_TAB_IDS[self.selected_tab]:
             case 'status':
-                pass
-            case 'items':
-                pass
+                screen.blit(assets.get_asset('textures/characters/test.png'), GUIConstants.OPTIONS_UI_CONTENT_START_CORNER)
+                name_label = (assets.get_asset(GUIConstants.OPTIONS_UI_FONT_FILENAME, GUIConstants.OPTIONS_UI_FONT_SIZE)
+                              .render(i18n.get_string_from_id('player_name'), GUIConstants.TEXT_ANTI_ALIASING, GUIConstants.OPTIONS_UI_TEXT_COLOR))
+                screen.blit(name_label, (GUIConstants.OPTIONS_UI_CONTENT_START_CORNER[0] + 176, GUIConstants.OPTIONS_UI_CONTENT_START_CORNER[1]))
+                HP_label = (assets.get_asset(GUIConstants.OPTIONS_UI_FONT_FILENAME, GUIConstants.OPTIONS_UI_FONT_SIZE)
+                              .render(f' HP: {main_player.hp}/{main_player.max_hp}', GUIConstants.TEXT_ANTI_ALIASING, GUIConstants.OPTIONS_UI_TEXT_COLOR))
+                screen.blit(HP_label, (GUIConstants.OPTIONS_UI_CONTENT_START_CORNER[0] + 176, GUIConstants.OPTIONS_UI_CONTENT_START_CORNER[1] + GUIConstants.OPTIONS_UI_MENU_TEXT_LINE_HEIGHT * 0.8))
             case 'save':
                 save_time_file = open('save_datas.json', 'r')
                 save_time_json = dict(json.load(save_time_file))

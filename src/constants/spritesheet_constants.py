@@ -31,8 +31,8 @@ ACTION_STOP = [True, True, True, True, True, True, True, True, None, None, None,
 ACTUALLY_MOVES = [False, False, False, False, False, False, False, False, True, True, True, True, False, False, False,
                   False, False, False, False, False, False]
 
-SPEED_X = [0, -0.12, 0, 0.12]
-SPEED_Y = [-0.12, 0, 0.12, 0]
+SPEED_X = [0, -0.11, 0, 0.11]
+SPEED_Y = [-0.11, 0, 0.11, 0]
 
 ANIM_UPDATE_THRESHOLD = int(5 * (Constants.FPS / 60))
 EMOTE_UPDATE_THRESHOLD = int(6 * (Constants.FPS / 60))

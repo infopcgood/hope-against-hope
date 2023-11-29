@@ -4,9 +4,12 @@
 class SceneChange:
     """object for event"""
 
-    def __init__(self, desired_scene, desired_location):
+    def __init__(self, desired_scene, desired_location = None):
         self.finished = False
-        self.desired_scene = desired_scene(*desired_location)
+        if desired_location:
+            self.desired_scene = desired_scene(*desired_location)
+        else:
+            self.desired_scene = desired_scene()
 
     def run(self):
         """run scene change, does not have actual effect"""

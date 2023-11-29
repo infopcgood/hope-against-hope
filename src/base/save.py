@@ -9,6 +9,7 @@ import base64
 
 from src.base.assets import assets
 from src.base.spritesheet import SpriteSheet
+from src.i18n.i18n import i18n
 from src.scenes.scene import Scene
 
 
@@ -22,7 +23,8 @@ class Save:
             last_saved_time_file.close()
         except Exception as exception:
             self.last_saved_time_json = dict(json.loads("{}"))
-        pass
+        self.load_needed = False
+        self.load_data = None
 
     # remove all Surface type attributes from character to make it pickleable without modifying the original one
     def make_character_pickleable(self, character):
@@ -85,10 +87,22 @@ class Save:
         data = pickle.loads(load_file_content)
         load_file.close()
         if data[0] == hashlib.sha512(pickle.dumps((data[1], data[2]))).digest():
-            print(f"Save file {filename} loaded successfully.")
             return self.get_scene_from_pickle(data[1]), self.get_character_from_pickle(data[2])
         else:
             raise Exception("File is either corrupt, cracked, or damaged!")
+
+    def mark_as_new_file(self, filename):
+        self.last_saved_time_json[filename] = i18n.get_string_from_id('new_file')
+        last_saved_time_file = open('save_datas.json', 'w')
+        json.dump(self.last_saved_time_json, last_saved_time_file)
+        last_saved_time_file.close()
+
+    def validate_integrity(self, filename):
+        try:
+            data = self.load_data_from_file(filename)
+            return True
+        except:
+            return False
 
     # delete file (unused)
     def delete_file(self, filename):

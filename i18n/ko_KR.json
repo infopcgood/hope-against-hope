@@ -8,5 +8,8 @@
   "yes": "네",
   "no": "아니요",
   "save_file_preposition": "세이브 파일 ",
-  "saved": "저장됨"
+  "saved": "저장됨",
+  "player_name": "플레이어",
+  "load": "로드",
+  "new_file": "새 게임"
 }
