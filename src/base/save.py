@@ -1,11 +1,10 @@
-import datetime
-import gc
-import json
-import pickle
-import os
-import hashlib
-from copy import deepcopy, copy
 import base64
+import datetime
+import hashlib
+import json
+import os
+import pickle
+from copy import deepcopy, copy
 
 from src.base.assets import assets
 from src.base.spritesheet import SpriteSheet
@@ -72,9 +71,12 @@ class Save:
         save_file = open(filename, 'wb')
         pickled_player = self.make_character_pickleable(main_player)
         pickled_scene = self.make_scene_pickleable(scene)
+        # compute SHA512 hash from data and save it with the actual data, encoded in Base64 format
+        # relatively easy to crack since the file is just an easily guessable pickle file, but gives some protection
         save_file.write(base64.encodebytes(pickle.dumps(
             (hashlib.sha512(pickle.dumps((pickled_scene, pickled_player))).digest(), pickled_scene, pickled_player))))
         save_file.close()
+        # update last saved time
         self.last_saved_time_json[filename] = str(datetime.datetime.now())[:19]
         last_saved_time_file = open('save_datas.json', 'w')
         json.dump(self.last_saved_time_json, last_saved_time_file)
@@ -91,17 +93,20 @@ class Save:
         else:
             raise Exception("File is either corrupt, cracked, or damaged!")
 
+    # mark save as new file (overwrite last saved time data)
     def mark_as_new_file(self, filename):
         self.last_saved_time_json[filename] = i18n.get_string_from_id('new_file')
         last_saved_time_file = open('save_datas.json', 'w')
         json.dump(self.last_saved_time_json, last_saved_time_file)
         last_saved_time_file.close()
 
+    # integrity valoidation of save file
     def validate_integrity(self, filename):
         try:
             data = self.load_data_from_file(filename)
             return True
-        except:
+        except Exception as e:
+            print(e.message if hasattr(e, 'message') else e)
             return False
 
     # delete file (unused)

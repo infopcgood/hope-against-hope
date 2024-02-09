@@ -1,7 +1,8 @@
-from src.characters.character import Character
 import src.constants.spritesheet_constants as SpriteSheet_Constants
+from src.characters.character import Character
 
 
+# super basic Enemy class. unused ingame.
 class Enemy(Character):
     def __init__(self, tile_x=16, tile_y=9, facing=SpriteSheet_Constants.FACING_RIGHT,
                  spritesheet_path='textures/spritesheets/demo.png', max_hp=20,

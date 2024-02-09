@@ -1,21 +1,15 @@
-"""Base Scene only used in testing"""
-from collections import defaultdict
-import pygame
-
-from src.base.assets import assets
-from src.characters.npc import NPC
-from src.events.delay_event import DelayEvent
-from src.scenes.scene import Scene
-import src.scenes.start_scene as start_scene
-from src.events.scene_change_event import SceneChangeEvent
 import src.constants.spritesheet_constants as SpriteSheet_Constants
-from src.characters.character import Character
-from src.events.dialogue_event import DialogueEvent
+import src.scenes.start_scene as start_scene
+from src.characters.npc import NPC
 from src.events.basic_function_event import BasicFunctionEvent
+from src.events.delay_event import DelayEvent
+from src.events.dialogue_event import DialogueEvent
+from src.events.scene_change_event import SceneChangeEvent
+from src.scenes.scene import Scene
 
 
+# base scene, only used in testing.
 class BaseScene(Scene):
-    """Base scene only used in testing"""
 
     def __init__(self, start_tile_x=13, start_tile_y=10):
         super().__init__(32, 18, start_tile_x, start_tile_y, "textures/map/basic_background_with_houses.png",

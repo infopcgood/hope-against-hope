@@ -1,24 +1,20 @@
-"""scene change event module"""
-
-
+# object for Scene change
 class SceneChange:
-    """object for event"""
 
-    def __init__(self, desired_scene, desired_location = None):
+    def __init__(self, desired_scene, desired_location=None):
         self.finished = False
         if desired_location:
             self.desired_scene = desired_scene(*desired_location)
         else:
             self.desired_scene = desired_scene()
 
+    # does not have actual effect, just marks the event finished. Actual scene change occurs in main.
     def run(self):
-        """run scene change, does not have actual effect"""
         self.finished = True
 
 
+# scene change in form of event
 class SceneChangeEvent:
-    """Scene change event"""
-
     def __init__(self, desired_scene, desired_location):
         self.object = SceneChange(desired_scene, desired_location)
         self.needs_to_be_updated = False

@@ -1,3 +1,5 @@
+# constants about the asset system
+
 ASSET_FOLDERS = ['sounds/', 'textures/']
 FONT_FOLDERS = ['fonts/']
 I18N_FOLDERS = ['i18n/']

@@ -1,8 +1,7 @@
-"""constants related to gui"""
+# constants related to GUI systems
 import pygame
 
 import src.constants.base_constants as Constants
-from src.i18n.i18n import i18n
 
 TEXT_ANTI_ALIASING = True
 

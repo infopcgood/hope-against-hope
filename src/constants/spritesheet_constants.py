@@ -1,4 +1,4 @@
-"""Constants related to spritesheet and animations"""
+# constants related to spritesheet and animations
 
 import src.constants.base_constants as Constants
 

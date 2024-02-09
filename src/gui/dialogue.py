@@ -1,17 +1,16 @@
-"""Basic Dialogue module containing class Dialogue"""
-
 import pygame
+
 import src.constants.base_constants as Constants
 import src.constants.gui_constants as GUIConstants
 import src.constants.sound_constants as SoundConstants
 from src.base.assets import assets
 
 
+# Dialogue class that makes a new instance everytime when new dialogue is displayed
 class Dialogue:
-    """Dialogue class that makes a new instance everytime when new dialogue is displayed"""
-
+    # initialize dialogue information
     def __init__(self, text, image_path=None, animation=True, sound_weight="normal", text_shaking=False):
-        """Initialize dialogue information"""
+        # set basic variables
         self.text = text
         self.text_shaking = text_shaking
         self.animation = animation
@@ -24,21 +23,22 @@ class Dialogue:
         else:
             self.image = None
 
+    # function that is called once when dialogue is displayed
     def show(self, screen, scene, main_player):
-        """function that is called once when dialogue is displayed"""
+        pass
 
+    # play bleep sound for each valid char
     def bleep(self, end=False):
-        """play bleep sound for each valid char"""
         pygame.mixer.Channel(SoundConstants.DIALOGUE_CHANNEL).stop()
         sound_filename = ""
-        if False and end:
+        if False and end:  # activates on end of string, disabled for now
             sound_filename = SoundConstants.END_DIALOGUE_SOUND_FILENAME[self.sound_weight]
         else:
             sound_filename = SoundConstants.MID_DIALOGUE_SOUND_FILENAME[self.sound_weight]
         pygame.mixer.Channel(SoundConstants.DIALOGUE_CHANNEL).play(assets.get_asset(sound_filename))
 
+    # function that updates the dialogue(called repeatedly when dialogue is being displayed)
     def update(self, screen):
-        """function that updates the dialogue(called repeatedly when dialogue is being displayed)"""
         # typewriter animation control
         label_text = self.text
         if self.animation and self.typewriter_index < len(self.text):
@@ -72,5 +72,6 @@ class Dialogue:
             screen.blit(self.image,
                         (GUIConstants.DIALOGUE_TEXT_X_NO_IMAGE, GUIConstants.DIALOGUE_Y + GUIConstants.DIALOGUE_TEXT_Y))
 
+    # method called when dialogue stops displaying
     def hide(self, screen, scene, main_player):
-        """hide dialogue"""
+        pass

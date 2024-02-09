@@ -1,14 +1,11 @@
-"""void event module"""
-
-
+# V O I D
 class Void:
     def __init__(self):
         self.finished = True
 
 
+# empty event object that waits for a single keypress
 class VoidEvent:
-    """void event that effectively does nothing"""
-
     def __init__(self, *args):
         self.args = args
         self.object = Void()

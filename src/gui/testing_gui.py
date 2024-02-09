@@ -1,18 +1,15 @@
-"""Testing GUI module that contains TestingGUI class"""
-
-import pygame
 import src.constants.gui_constants as GUIConstants
 from src.base.assets import assets
 
 
+# GUI only used for testing.
 class TestingGUI:
-    """gui for testing. it's honestly a show-off."""
 
     def __init__(self):
         pass
 
+    # draw datas to screen
     def update(self, screen, main_player, fps):
-        """updates the GUI every frame"""
         tile_pos_label = assets.get_asset(GUIConstants.TESTING_GUI_FONT_FILENAME,
                                           GUIConstants.TESTING_GUI_FONT_SIZE).render(
             f'Tile Pos: ({main_player.tile_x}, {main_player.tile_y})', GUIConstants.TEXT_ANTI_ALIASING, (0, 0, 0))

@@ -1,14 +1,11 @@
-"""Basic scene class"""
 from collections import defaultdict
-import pygame
-import src.constants.sound_constants as SoundConstants
+
 import src.constants.tilemap_constants as TileMap_Constants
-from src.base.assets import assets
 from src.base.space import Space
 
 
+# basic Scene implementation from SPace
 class Scene(Space):
-    """basic scene class"""
 
     def __init__(self, scene_tiles_x=32, scene_tiles_y=18, start_tile_x=16, start_tile_y=9,
                  background_image="textures/map/white.png",
@@ -18,6 +15,7 @@ class Scene(Space):
                          start_tile_x * TileMap_Constants.TILE_SIZE, start_tile_y * TileMap_Constants.TILE_SIZE,
                          background_image, upper_layer_image, bgm, will_fade_in, will_fade_out, scale_screen,
                          can_save, events_on_load)
+        # set scene tile data
         self.scene_tiles_x = scene_tiles_x
         self.scene_tiles_y = scene_tiles_y
         # set start tile
@@ -27,7 +25,7 @@ class Scene(Space):
         self.event_tiles = defaultdict(list)
         # npcs
         self.npcs = npcs if npcs else []
-        # define what tiles are steppable
+        # define what tiles are steppable (1) and what are not (0)
         self.movable_tiles = [
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],

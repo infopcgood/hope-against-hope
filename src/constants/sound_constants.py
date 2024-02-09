@@ -1,3 +1,5 @@
+# constants related to sound system
+
 BGM_CHANNEL = 0
 EFFECT_CHANNEL = 1
 DIALOGUE_CHANNEL = 2

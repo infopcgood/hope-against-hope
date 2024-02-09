@@ -1,4 +1,4 @@
-"""constants related to tilemap systems"""
+# constants related to tilemap system
 
 TILE_SIZE = 32
 TILEMAP_MAX_WIDTH = 32

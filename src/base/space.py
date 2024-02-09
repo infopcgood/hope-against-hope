@@ -1,9 +1,10 @@
 import pygame
 
-from src.base.assets import assets
 import src.constants.sound_constants as SoundConstants
+from src.base.assets import assets
 
 
+# Space class that is used for the base of Scene and Battle classes.
 class Space:
     def __init__(self, width=1024, height=576, start_x=512, start_y=288, background_image="textures/map/white.png",
                  upper_layer_image="textures/upper_layer/transparent.png", bgm="", will_fade_in=True,
@@ -34,27 +35,33 @@ class Space:
         # define if game can be saved in this space
         self.can_save = can_save
 
+    # function that is called when space is loaded into game.
     def load(self, screen, main_player):
-        """function called when scene is loaded"""
+        # fix position
+        main_player.stop(screen, self, main_player)
+        # update event system
         main_player.event_active = False
         main_player.events_waiting = []
         if self.event_on_load:
             main_player.add_event_queue(screen, self, main_player, self.event_on_load)
             main_player.update_event_system(screen, self, main_player)
+        # load and play bgm
         if self.bgm_name:
             if pygame.mixer.Channel(SoundConstants.BGM_CHANNEL).get_busy():
                 pygame.mixer.Channel(SoundConstants.BGM_CHANNEL).stop()
             pygame.mixer.Channel(SoundConstants.BGM_CHANNEL).set_volume(SoundConstants.BGM_VOLUME)
             pygame.mixer.Channel(SoundConstants.BGM_CHANNEL).play(assets.get_asset(self.bgm_name), loops=32767)
+        # run method of self which adds event to the tiles
         self.add_event_system(screen, main_player)
 
+    # draw map on screen, called every frame
     def update_map(self, screen):
-        """update map(background) every frame"""
         screen.blit(self.background_image, (0, 0))
 
+    # draw upper layer on screen, called every frame
     def update_upper_layer(self, screen):
-        """update upper layer every frame"""
         screen.blit(self.upper_layer_image, (0, 0))
 
+    # assign events to tiles, can be redefined by child but is not necessary (if no tile events are needed)
     def add_event_system(self, screen, main_player):
         pass

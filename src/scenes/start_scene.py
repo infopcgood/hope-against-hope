@@ -1,19 +1,14 @@
 """Start Scene"""
-from collections import defaultdict
-import pygame
 
-from src.base.assets import assets
-from src.characters.character import Character
-from src.scenes.base_scene import BaseScene
-from src.scenes.scene import Scene
 from src.events.basic_function_event import BasicFunctionEvent
 from src.events.scene_change_event import SceneChangeEvent
 from src.extra.functions import quit_game
-import src.constants.spritesheet_constants as SpriteSheet_Constants
+from src.scenes.base_scene import BaseScene
+from src.scenes.scene import Scene
 
 
+# scene only used in testing. ignore this file.
 class StartScene(Scene):
-    """Start Scene"""
 
     def __init__(self, start_tile_x=16, start_tile_y=9):  # warning ignored because everything has to be redefined
         super().__init__(32, 18, start_tile_x, start_tile_y, "textures/map/test_title_screen.png",
